@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 1: Parallel Computing & OpenMP — From One Chef to a Parallel Kitchen</title>
+  <meta name="description" content="Day 1 of 2-Day Parallel Computing Workshop: Master parallel computing fundamentals, architectures, memory models, Amdahl's Law, and OpenMP through the continuous kitchen analogy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <div class="brand">
+        <span class="brand-icon">⚡</span>
+        <div class="brand-text">
+          <span class="brand-title">Parallel Computing 101</span>
+          <span class="brand-badge">Day 1 • OpenMP</span>
+        </div>
+      </div>
+      <nav class="nav-links" id="navLinks">
+        <a href="#agenda">Agenda</a>
+        <a href="#rosetta">Kitchen Metaphor</a>
+        <a href="#architectures">Hardware & Memory</a>
+        <a href="#amdahl">Amdahl's Law</a>
+        <a href="#codelab">OpenMP Lab</a>
+        <a href="#simulators">Live Simulators</a>
+        <a href="#milestones">10 Must-Knows</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">
+          <span class="toggle-icon">☀️</span>
+        </button>
+        <a href="#codelab" class="btn btn-primary btn-sm">Jump to Code Lab</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="container hero-content">
+      <div class="hero-pill">
+        <span class="pill-dot"></span>
+        <span>2-Day Workshop Series • Day 1 Hands-On Guide</span>
+      </div>
+      <h1 class="hero-title">
+        From <span class="gradient-text-accent">One Chef</span> to a <br class="br-desktop">
+        <span class="gradient-text-primary">High-Performance Parallel Kitchen</span>
+      </h1>
+      <p class="hero-subtitle">
+        Demystifying Parallel Computing and OpenMP for absolute beginners through the intuitive story of restaurant scaling, live interactive simulators, and real C code.
+      </p>
+
+      <!-- Quick Metrics Bar -->
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-num">8 hrs</div>
+          <div class="stat-label">Duration & 8 Sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1 Model</div>
+          <div class="stat-label">Shared Memory (OpenMP)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3 Simulators</div>
+          <div class="stat-label">Queues, Races & Scheduling</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">10 Goals</div>
+          <div class="stat-label">Core Concepts to Master</div>
+        </div>
+      </div>
+
+      <div class="hero-cta-group">
+        <a href="#simulators" class="btn btn-primary btn-lg">
+          <span>🚀 Launch Interactive Simulators</span>
+        </a>
+        <a href="#agenda" class="btn btn-secondary btn-lg">
+          <span>📅 View 8-Hour Schedule</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Section 0: Day at a Glance / Interactive Agenda -->
+    <section id="agenda" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">🕘 8-Hour Master Schedule</div>
+        <h2 class="section-title">Day 1 at a Glance</h2>
+        <p class="section-desc">From fundamental intuition in the morning to writing parallel matrix multiplication and benchmarking in the evening.</p>
+      </div>
+
+      <div class="timeline-grid">
+        <!-- Item 1 -->
+        <div class="timeline-card" data-session="1">
+          <div class="time-badge">9:00 – 9:30 AM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 1</span>
+            <span class="session-tag theory">Concept</span>
+          </div>
+          <h3>What is Parallel Computing?</h3>
+          <p>The 100-order dilemma. Why CPU clock speed plateaued and why multiple cores are the future.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Sequential vs Parallel, Real-world AI & Weather applications</div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="timeline-card" data-session="2">
+          <div class="time-badge">9:30 – 10:15 AM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 2</span>
+            <span class="session-tag theory">Hardware</span>
+          </div>
+          <h3>Parallel Hardware & Architectures</h3>
+          <p>CPUs, Cores, and Flynn's Taxonomy explained with kitchen workers.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> SIMD (all chop tomatoes) vs MIMD (different dish per chef)</div>
+        </div>
+
+        <!-- Break 1 -->
+        <div class="timeline-card break-card">
+          <div class="time-badge">10:15 – 10:30 AM</div>
+          <div class="break-icon">☕</div>
+          <h3>Morning Tea Break</h3>
+          <p>Grab a beverage and digest hardware classifications!</p>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="timeline-card" data-session="3">
+          <div class="time-badge">10:30 – 11:15 AM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 3</span>
+            <span class="session-tag theory">Memory</span>
+          </div>
+          <h3>Shared vs Distributed Memory</h3>
+          <p>One kitchen refrigerator vs multiple branch kitchens. Setting up OpenMP vs MPI.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Shared memory, L1/L2/L3 cache, and Cache Coherence</div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="timeline-card" data-session="4">
+          <div class="time-badge">11:15 – 12:00 PM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 4</span>
+            <span class="session-tag math">Performance</span>
+          </div>
+          <h3>Speedup & Amdahl's Law</h3>
+          <p>Why 4 chefs don't mean 4× speed when there is only one cashier.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Execution Time, Speedup \(S = T_s/T_p\), Efficiency, Amdahl's Limit</div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="timeline-card" data-session="5">
+          <div class="time-badge">12:00 – 1:00 PM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 5</span>
+            <span class="session-tag code">Hands-on C</span>
+          </div>
+          <h3>OpenMP Intro & First Programs</h3>
+          <p>Compiling with <code>-fopenmp</code>, creating thread teams, and thread IDs.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> <code>#pragma omp parallel</code>, <code>omp_get_thread_num()</code></div>
+        </div>
+
+        <!-- Lunch -->
+        <div class="timeline-card break-card lunch-card">
+          <div class="time-badge">1:00 – 2:00 PM</div>
+          <div class="break-icon">🍱</div>
+          <h3>Lunch Break</h3>
+          <p>Fuel up for the afternoon live coding and performance labs!</p>
+        </div>
+
+        <!-- Item 6 -->
+        <div class="timeline-card" data-session="6">
+          <div class="time-badge">2:00 – 3:00 PM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 6</span>
+            <span class="session-tag code">Coding</span>
+          </div>
+          <h3>Parallel Loops & Variable Scoping</h3>
+          <p>Distributing loop iterations and understanding shared vs private variables.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> <code>#pragma omp parallel for</code>, <code>shared</code> vs <code>private(x)</code></div>
+        </div>
+
+        <!-- Item 7 -->
+        <div class="timeline-card" data-session="7">
+          <div class="time-badge">3:00 – 3:45 PM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 7</span>
+            <span class="session-tag code">Critical</span>
+          </div>
+          <h3>Race Conditions, Critical & Reduction</h3>
+          <p>The shared cash register bug (₹100 + ₹50 + ₹30 = ₹130) and how reduction saves the day.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Data races, <code>critical</code> sections, <code>reduction(+:sum)</code></div>
+        </div>
+
+        <!-- Break 2 -->
+        <div class="timeline-card break-card">
+          <div class="time-badge">3:45 – 4:00 PM</div>
+          <div class="break-icon">☕</div>
+          <h3>Afternoon Refreshment</h3>
+          <p>Quick break before the grand finale benchmark.</p>
+        </div>
+
+        <!-- Item 8 -->
+        <div class="timeline-card" data-session="8">
+          <div class="time-badge">4:00 – 5:00 PM</div>
+          <div class="session-header-row">
+            <span class="session-num">Session 8</span>
+            <span class="session-tag capstone">Capstone</span>
+          </div>
+          <h3>Scheduling & Matrix Multiplication</h3>
+          <p>Static vs Dynamic scheduling (Tea vs Biryani) and benchmarking matrix math.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> <code>schedule(static/dynamic)</code>, <code>collapse(2)</code>, <code>omp_get_wtime()</code></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: The Kitchen Rosetta Stone -->
+    <section id="rosetta" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">👨🍳 The Continuous Analogy</div>
+        <h2 class="section-title">The Restaurant Rosetta Stone</h2>
+        <p class="section-desc">Every abstract computing concept maps directly to a high-energy restaurant kitchen.</p>
+      </div>
+
+      <div class="rosetta-grid">
+        <div class="rosetta-card">
+          <div class="rosetta-icon">🏢</div>
+          <div class="rosetta-term">Computer</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">The Entire Restaurant</div>
+          <p>The complete infrastructure delivering meals to hungry customers.</p>
+        </div>
+
+        <div class="rosetta-card">
+          <div class="rosetta-icon">🍳</div>
+          <div class="rosetta-term">CPU</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">The Main Kitchen</div>
+          <p>The workspace where raw computational work actually gets executed.</p>
+        </div>
+
+        <div class="rosetta-card highlight-card">
+          <div class="rosetta-icon">👨🍳</div>
+          <div class="rosetta-term">CPU Core</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">An Individual Chef</div>
+          <p>A physical worker with independent hands capable of preparing dishes.</p>
+        </div>
+
+        <div class="rosetta-card highlight-card">
+          <div class="rosetta-icon">🧵</div>
+          <div class="rosetta-term">Software Thread</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">Chef's Active Task Stream</div>
+          <p>A lightweight execution unit dispatched to run on a core.</p>
+        </div>
+
+        <div class="rosetta-card">
+          <div class="rosetta-icon">📋</div>
+          <div class="rosetta-term">Program</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">Restaurant Operating Recipe Book</div>
+          <p>The complete set of instructions written down for execution.</p>
+        </div>
+
+        <div class="rosetta-card">
+          <div class="rosetta-icon">🍱</div>
+          <div class="rosetta-term">Task / Iteration</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">A Specific Food Order</div>
+          <p>e.g., Order #42: Cook 1 Plate of Fried Rice.</p>
+        </div>
+
+        <div class="rosetta-card">
+          <div class="rosetta-icon">🧊</div>
+          <div class="rosetta-term">Shared Memory (RAM)</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">Central Kitchen Refrigerator</div>
+          <p>Shared ingredients and storage that every chef in the kitchen can reach.</p>
+        </div>
+
+        <div class="rosetta-card">
+          <div class="rosetta-icon">🧂</div>
+          <div class="rosetta-term">CPU Cache (L1/L2)</div>
+          <div class="rosetta-arrow">⇄</div>
+          <div class="rosetta-metaphor">Chef's Immediate Spice Counter</div>
+          <p>Small, lightning-fast ingredient shelf right next to the chef's cutting board.</p>
+        </div>
+      </div>
+
+      <!-- Story Comparison: 1 Chef vs 4 Chefs -->
+      <div class="comparison-box">
+        <div class="comp-col">
+          <div class="comp-header">
+            <span class="comp-badge bad">Sequential Execution</span>
+            <h3>1 Chef • 100 Orders</h3>
+          </div>
+          <div class="comp-visual">
+            <div class="chef-avatar">👨🍳</div>
+            <div class="order-pipeline">
+              <span class="order-chip">Order 1</span> → 
+              <span class="order-chip">Order 2</span> → 
+              <span class="order-chip">Order 3</span> ... → 
+              <span class="order-chip">Order 100</span>
+            </div>
+          </div>
+          <p class="comp-note">⚠️ <em>"The chef isn't slow — the architecture is single-threaded! Total time = 100 × order_time."</em></p>
+        </div>
+
+        <div class="comp-col highlight-col">
+          <div class="comp-header">
+            <span class="comp-badge good">Parallel Execution (OpenMP)</span>
+            <h3>4 Chefs • 25 Orders Each</h3>
+          </div>
+          <div class="comp-visual-grid">
+            <div class="chef-lane"><span class="chef-avatar">👨🍳₁</span> <span class="order-chip">Orders 1–25</span></div>
+            <div class="chef-lane"><span class="chef-avatar">👨🍳₂</span> <span class="order-chip">Orders 26–50</span></div>
+            <div class="chef-lane"><span class="chef-avatar">👨🍳₃</span> <span class="order-chip">Orders 51–75</span></div>
+            <div class="chef-lane"><span class="chef-avatar">👨🍳₄</span> <span class="order-chip">Orders 76–100</span></div>
+          </div>
+          <p class="comp-note">⚡ <em>"Work happens concurrently across 4 cores. Ideal theoretical speedup: 4×!"</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Hardware, Flynn's Taxonomy & Memory Models -->
+    <section id="architectures" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">🔬 Hardware & Memory</div>
+        <h2 class="section-title">Architectures, SIMD/MIMD & Memory Models</h2>
+        <p class="section-desc">Understanding the silicon under the hood and the crucial difference between OpenMP and MPI.</p>
+      </div>
+
+      <div class="tab-container" id="archTabs">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="tab-flynn">Flynn's Taxonomy (SIMD vs MIMD)</button>
+          <button class="tab-btn" data-tab="tab-memory">Shared vs Distributed Memory</button>
+          <button class="tab-btn" data-tab="tab-cache">Cache Hierarchy & Coherence</button>
+        </div>
+
+        <!-- Tab 1: Flynn's Taxonomy -->
+        <div class="tab-content active" id="tab-flynn">
+          <div class="two-col-grid">
+            <div class="content-box">
+              <div class="concept-badge">SIMD</div>
+              <h3>Single Instruction, Multiple Data</h3>
+              <div class="kitchen-quote">
+                💬 <strong>Kitchen Analogy:</strong> The Head Chef barks: <em>"Everyone CHOP ONE TOMATO simultaneously!"</em>
+              </div>
+              <ul class="feature-list">
+                <li><strong>One instruction:</strong> <code>CHOP</code></li>
+                <li><strong>Multiple data streams:</strong> Worker 1 has Tomato 1, Worker 2 has Tomato 2, Worker 3 has Tomato 3...</li>
+                <li><strong>Silicon implementation:</strong> Vector registers (AVX-512, NEON, GPUs).</li>
+                <li><strong>Best for:</strong> Image pixel processing, vector math, audio processing.</li>
+              </ul>
+            </div>
+
+            <div class="content-box">
+              <div class="concept-badge">MIMD</div>
+              <h3>Multiple Instruction, Multiple Data</h3>
+              <div class="kitchen-quote">
+                💬 <strong>Kitchen Analogy:</strong> Four chefs prepare completely different dishes:
+              </div>
+              <ul class="feature-list">
+                <li>👨🍳 Chef 1: <em>Boil rice</em> (Instruction A, Data A)</li>
+                <li>👨🍳 Chef 2: <em>Fry chicken</em> (Instruction B, Data B)</li>
+                <li>👨🍳 Chef 3: <em>Toss salad</em> (Instruction C, Data C)</li>
+                <li>👨🍳 Chef 4: <em>Bake bread</em> (Instruction D, Data D)</li>
+                <li><strong>Silicon implementation:</strong> Modern Multicore x86 / ARM CPUs running independent threads (OpenMP model).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Shared vs Distributed Memory -->
+        <div class="tab-content" id="tab-memory">
+          <div class="two-col-grid">
+            <div class="memory-card shared">
+              <div class="memory-header">
+                <span class="memory-icon">🧊</span>
+                <h3>Shared Memory Architecture</h3>
+                <span class="tech-tag">OpenMP (Day 1)</span>
+              </div>
+              <div class="memory-diagram">
+                <div class="mem-block">Shared RAM (Central Pantry)</div>
+                <div class="mem-arrows">↓↓↓↓</div>
+                <div class="cores-row">
+                  <div class="core-box">Core 0 (Thread 0)</div>
+                  <div class="core-box">Core 1 (Thread 1)</div>
+                  <div class="core-box">Core 2 (Thread 1)</div>
+                  <div class="core-box">Core 3 (Thread 3)</div>
+                </div>
+              </div>
+              <p>All threads share one common address space. Fast communication via pointers, but requires caution with race conditions!</p>
+            </div>
+
+            <div class="memory-card distributed">
+              <div class="memory-header">
+                <span class="memory-icon">🌐</span>
+                <h3>Distributed Memory Architecture</h3>
+                <span class="tech-tag">MPI (Day 2 Preview)</span>
+              </div>
+              <div class="memory-diagram">
+                <div class="dist-nodes">
+                  <div class="node-box">
+                    <span>Node 1</span>
+                    <small>RAM 1</small>
+                  </div>
+                  <div class="network-bus">⇄ Network Messages ⇄</div>
+                  <div class="node-box">
+                    <span>Node 2</span>
+                    <small>RAM 2</small>
+                  </div>
+                </div>
+              </div>
+              <p>Separate physical computers (branches). Branch 1 cannot peek into Branch 2's fridge; they must pass explicit messages over the network.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Cache & Coherence -->
+        <div class="tab-content" id="tab-cache">
+          <div class="cache-explainer">
+            <h3>Why Cache Matters: The Walking Chef Problem</h3>
+            <p>If the central refrigerator (RAM) is 50 meters away, walking back and forth for every pinch of salt destroys throughput. Modern CPUs put small, ultra-fast memory right next to the core.</p>
+
+            <div class="cache-pyramid">
+              <div class="pyramid-level l1"><span>L1 Cache (Fastest, ~1-2 ns, KB) — Chef's Cutting Board</span></div>
+              <div class="pyramid-level l2"><span>L2 Cache (~3-5 ns, Hundreds KB) — Personal Prep Shelf</span></div>
+              <div class="pyramid-level l3"><span>L3 Cache (~10-20 ns, Shared MB) — Kitchen Pass Counter</span></div>
+              <div class="pyramid-level ram"><span>Main Memory RAM (~60-100 ns, GB) — Central Cold Storage</span></div>
+            </div>
+
+            <div class="coherence-warning">
+              <h4>⚠️ The Cache Coherence Dilemma</h4>
+              <p>Suppose <strong>Chef 1</strong> updates the secret salt quantity on their cutting board. <strong>Chef 2</strong> still reads their local stale copy. Hardware uses cache coherence protocols (MESI) to keep local caches synchronized automatically.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Performance, Speedup & Interactive Amdahl's Law -->
+    <section id="amdahl" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">📊 Mathematics of Speed</div>
+        <h2 class="section-title">Speedup, Efficiency & Amdahl's Law Calculator</h2>
+        <p class="section-desc">Why 100 chefs cannot speed up a restaurant if you only have one single cashier.</p>
+      </div>
+
+      <div class="amdahl-container">
+        <!-- Interactive Controls -->
+        <div class="amdahl-controls">
+          <div class="formula-banner">
+            <div class="formula-item">
+              <span class="formula-label">Speedup Formula</span>
+              <span class="formula-math">\(Speedup = \frac{T_{sequential}}{T_{parallel}}\)</span>
+            </div>
+            <div class="formula-item">
+              <span class="formula-label">Amdahl's Law</span>
+              <span class="formula-math">\(Speedup_{max} = \frac{1}{S + \frac{P}{N}}\)</span>
+            </div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <label for="serialFractionSlider">Serial Fraction (\(S\) — The Single Cashier):</label>
+              <span class="slider-val" id="serialVal">20%</span>
+            </div>
+            <input type="range" id="serialFractionSlider" min="0" max="90" step="5" value="20" class="slider">
+            <small class="slider-hint">Parallel portion \(P = 1 - S\) is <strong id="parallelVal">80%</strong></small>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <label for="numCoresSlider">Number of Processors / Chefs (\(N\)):</label>
+              <span class="slider-val" id="coresVal">4 Cores</span>
+            </div>
+            <input type="range" id="numCoresSlider" min="1" max="64" step="1" value="4" class="slider">
+          </div>
+
+          <!-- Real-time Output Metrics -->
+          <div class="amdahl-results">
+            <div class="res-box">
+              <span class="res-label">Actual Speedup (\(S_N\))</span>
+              <span class="res-value highlight" id="actualSpeedup">2.50×</span>
+            </div>
+            <div class="res-box">
+              <span class="res-label">Parallel Efficiency</span>
+              <span class="res-value" id="efficiencyVal">62.5%</span>
+            </div>
+            <div class="res-box">
+              <span class="res-label">Theoretical Max Speedup (\(N \to \infty\))</span>
+              <span class="res-value accent" id="maxSpeedup">5.00×</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Canvas & Story Breakdown -->
+        <div class="amdahl-visualizer">
+          <div class="visualizer-header">
+            <h4>📈 Speedup Scaling Curve</h4>
+            <span class="badge-dim" id="scalingInsight">Diminishing returns as N increases</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="amdahlChart" width="480" height="260"></canvas>
+          </div>
+          <div class="cashier-story-box">
+            <div class="cashier-icon">🏪</div>
+            <div class="cashier-text">
+              <strong>The Cashier Takeaway:</strong> With 20% sequential work, even if you hire <strong>10,000 chefs</strong>, your restaurant can <em>never exceed a 5.0× total speedup</em>. The sequential bottleneck is king!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: OpenMP Hands-on Code Lab -->
+    <section id="codelab" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">💻 Hands-on Code Lab</div>
+        <h2 class="section-title">OpenMP in C: From Hello World to Matrix Multiplication</h2>
+        <p class="section-desc">Practical, beginner-friendly examples with annotated line-by-line explanations, compilation instructions, and key directives.</p>
+      </div>
+
+      <div class="code-lab-wrapper">
+        <!-- Lab Navigator Tabs -->
+        <div class="lab-nav" id="codeLabNav">
+          <button class="lab-tab active" data-code="hello">
+            <span class="tab-num">01</span>
+            <span class="tab-title">Hello OpenMP</span>
+          </button>
+          <button class="lab-tab" data-code="parallel-for">
+            <span class="tab-num">02</span>
+            <span class="tab-title">Parallel For Loop</span>
+          </button>
+          <button class="lab-tab" data-code="race-condition">
+            <span class="tab-num">03</span>
+            <span class="tab-title">Race Condition & Critical</span>
+          </button>
+          <button class="lab-tab" data-code="reduction">
+            <span class="tab-num">04</span>
+            <span class="tab-title">Reduction Clause</span>
+          </button>
+          <button class="lab-tab" data-code="scheduling">
+            <span class="tab-num">05</span>
+            <span class="tab-title">Static vs Dynamic Loop Scheduling</span>
+          </button>
+          <button class="lab-tab" data-code="matrix">
+            <span class="tab-num">06</span>
+            <span class="tab-title">Matrix Multiplication + Collapse</span>
+          </button>
+          <button class="lab-tab" data-code="timing">
+            <span class="tab-num">07</span>
+            <span class="tab-title">Benchmarking with Wtime</span>
+          </button>
+        </div>
+
+        <!-- Code Display Pane -->
+        <div class="code-display-pane">
+          <div class="code-header-bar">
+            <div class="file-info">
+              <span class="file-icon">📄</span>
+              <span class="file-name" id="currentFileName">hello_openmp.c</span>
+            </div>
+            <div class="code-actions">
+              <button class="btn-copy" id="copyCodeBtn" title="Copy Code">
+                <span>📋 Copy Source</span>
+              </button>
+            </div>
+          </div>
+
+          <pre class="code-block"><code id="codeContent" class="language-c"></code></pre>
+
+          <!-- Explanation Drawer -->
+          <div class="code-explanation-card">
+            <div class="exp-title">
+              <span class="exp-icon">💡</span>
+              <span id="expHeading">How it works & Core OpenMP Directives</span>
+            </div>
+            <div class="exp-body" id="expBody">
+              <!-- Injected by JS -->
+            </div>
+            <div class="compilation-bar">
+              <div class="compile-cmd">
+                <span class="cmd-label">Compile:</span>
+                <code id="compileCmd">gcc -fopenmp hello_openmp.c -o hello.exe</code>
+              </div>
+              <div class="compile-cmd">
+                <span class="cmd-label">Run:</span>
+                <code id="runCmd">./hello.exe</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Live Interactive Simulators -->
+    <section id="simulators" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">🎮 Live Visual Simulators</div>
+        <h2 class="section-title">Interactive Kitchen & Concurrency Simulators</h2>
+        <p class="section-desc">Experience sequential bottlenecks, thread race conditions, and scheduling load imbalances directly in your browser.</p>
+      </div>
+
+      <!-- Simulator 1: The 100-Order Queue (1 Chef vs 4 Chefs) -->
+      <div class="sim-card">
+        <div class="sim-header">
+          <div class="sim-title-group">
+            <span class="sim-badge">Simulator 1</span>
+            <h3>Order Queue Simulator: 1 Chef vs N Parallel Chefs</h3>
+          </div>
+          <div class="sim-controls-inline">
+            <button class="btn btn-primary btn-sm" id="btnRunQueueSim">▶ Run Simulation</button>
+            <button class="btn btn-secondary btn-sm" id="btnResetQueueSim">↺ Reset</button>
+          </div>
+        </div>
+
+        <div class="sim-body">
+          <div class="queue-params">
+            <label>Chefs (Cores):
+              <select id="queueChefsSelect" class="sim-select">
+                <option value="1">1 Chef (Sequential)</option>
+                <option value="2">2 Chefs</option>
+                <option value="4" selected>4 Chefs (Quad Core)</option>
+                <option value="8">8 Chefs (Octa Core)</option>
+              </select>
+            </label>
+            <label>Total Orders:
+              <span class="order-count-badge">40 Orders</span>
+            </label>
+            <div class="sim-metric">
+              <span>Time Elapsed: <strong id="queueTimeElapsed">0.0s</strong></span>
+              <span>Throughput: <strong id="queueThroughput">0 orders/s</strong></span>
+            </div>
+          </div>
+
+          <div class="chefs-lanes-container" id="chefsLanesContainer">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="queueTotalProgress" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulator 2: The Shared Cash Counter Race Condition -->
+      <div class="sim-card">
+        <div class="sim-header">
+          <div class="sim-title-group">
+            <span class="sim-badge critical">Simulator 2</span>
+            <h3>The Shared Cash Register Race Condition Demo</h3>
+          </div>
+          <div class="sim-controls-inline">
+            <button class="btn btn-danger btn-sm" id="btnSimulateBuggyCash">💥 Run Without Lock (Race Condition)</button>
+            <button class="btn btn-success btn-sm" id="btnSimulateSafeReduction">🛡️ Run With Reduction (Safe)</button>
+          </div>
+        </div>
+
+        <div class="sim-body">
+          <p class="sim-scenario-desc">
+            <strong>Scenario:</strong> Initial Register Balance = <strong>₹100</strong>. 
+            Chef 1 adds <strong>₹50</strong>. Chef 2 adds <strong>₹30</strong>. 
+            <em>Expected Final Balance = ₹180.</em>
+          </p>
+
+          <div class="race-visual-box">
+            <div class="cash-register-node">
+              <div class="reg-title">Shared Cash Register</div>
+              <div class="reg-amount" id="registerDisplay">₹100</div>
+              <div class="reg-status" id="registerStatus">IDLE</div>
+            </div>
+
+            <div class="threads-timeline" id="raceTimeline">
+              <div class="timeline-step" id="stepChef1">
+                <div class="step-actor">👨🍳 Chef 1 (Thread 0)</div>
+                <div class="step-action" id="chef1Action">Waiting...</div>
+              </div>
+              <div class="timeline-step" id="stepChef2">
+                <div class="step-actor">👨🍳 Chef 2 (Thread 1)</div>
+                <div class="step-action" id="chef2Action">Waiting...</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="race-log-box" id="raceLog">
+            Click a button above to observe how unsynchronized simultaneous memory reads and writes corrupt shared memory.
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulator 3: Scheduling Tea (1 min) vs Biryani (20 min) -->
+      <div class="sim-card">
+        <div class="sim-header">
+          <div class="sim-title-group">
+            <span class="sim-badge info">Simulator 3</span>
+            <h3>Static vs Dynamic Scheduling (Uneven Workloads)</h3>
+          </div>
+          <div class="sim-controls-inline">
+            <button class="btn btn-primary btn-sm" id="btnScheduleStatic">Compare: schedule(static)</button>
+            <button class="btn btn-accent btn-sm" id="btnScheduleDynamic">Compare: schedule(dynamic)</button>
+          </div>
+        </div>
+
+        <div class="sim-body">
+          <p class="sim-scenario-desc">
+            Orders arrive: ☕ Quick Tea (1s) vs 🍲 Heavy Biryani (4s). Notice how static chunks cause idle worker threads while dynamic scheduling balances the kitchen!
+          </p>
+
+          <div class="schedule-lanes-wrapper" id="scheduleLanesWrapper">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="schedule-summary" id="scheduleSummary">
+            Select a scheduling algorithm above to test work distribution.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: The 10 Golden Must-Understand Concepts (Interactive Checklist) -->
+    <section id="milestones" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">⭐ Day 1 Mastery</div>
+        <h2 class="section-title">The 10 Golden Concepts You MUST Understand</h2>
+        <p class="section-desc">Interactive checklist. Test your understanding before moving on to Day 2 (MPI).</p>
+      </div>
+
+      <div class="progress-counter-card">
+        <div class="counter-header">
+          <span>Your Day 1 Readiness Score</span>
+          <span class="score-badge" id="readinessScore">0 / 10 Completed</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill progress-gold" id="readinessFill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="checklist-grid" id="checklistGrid">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- Section 7: Bridge to Day 2 (OpenMP to MPI) -->
+    <section class="section-card bridge-card">
+      <div class="bridge-grid">
+        <div class="bridge-info">
+          <div class="section-tag gold-tag">🌉 The Bridge to Tomorrow</div>
+          <h2 class="bridge-title">From One Kitchen to Multiple Branches</h2>
+          <p class="bridge-text">
+            Today in <strong>OpenMP</strong>, we mastered multiple chefs working harmoniously inside <em>one kitchen</em> around a <em>shared refrigerator</em>.
+          </p>
+          <p class="bridge-text">
+            Tomorrow in <strong>Day 2 (MPI)</strong>, our restaurant brand expands to <em>multiple branches across the city</em>. The chefs can no longer touch each other's pantry — they must communicate via explicit <strong>messages</strong>.
+          </p>
+          <div class="recap-diagram-inline">
+            <div class="diag-node day1">
+              <strong>Day 1: OpenMP</strong><br>
+              1 Kitchen • Shared Memory • Threads
+            </div>
+            <div class="diag-arrow">➡️ Next ➡️</div>
+            <div class="diag-node day2">
+              <strong>Day 2: MPI</strong><br>
+              Multiple Branches • Distributed Memory • Processes
+            </div>
+          </div>
+        </div>
+        <div class="bridge-quote-box">
+          <div class="quote-mark">“</div>
+          <p>
+            "Parallel computing is not about working faster; it is about organizing work so everyone can contribute simultaneously without stepping on each other's toes."
+          </p>
+          <span class="quote-author">— Day 1 Parallel Computing Trainer Guide</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <div class="footer-brand">⚡ Parallel Computing Workshop</div>
+        <p>Day 1: OpenMP & Shared Memory Computing • Designed for Beginners</p>
+      </div>
+      <div class="footer-right">
+        <button class="btn btn-secondary btn-sm" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆ Back to Top</button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
