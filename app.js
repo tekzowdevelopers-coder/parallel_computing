@@ -1,28 +1,17 @@
 /**
- * 2-Day Parallel Computing Masterclass — Complete Interactive Engine
- * Day 1: OpenMP (Shared Memory) & Day 2: MPI, GPU & Hybrid (Distributed Memory)
+ * Day 1: Parallel Computing & OpenMP — Master Interactive Engine
+ * From One Chef -> Multiple Chefs -> Parallel Kitchen
  */
-
-let CURRENT_DAY = 'day2'; // Default to Day 2
 
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
-  initDaySwitcher();
   initArchTabs();
+  initAmdahlCalculator();
   initCodeLab();
+  initQueueSimulator();
+  initRaceSimulator();
+  initSchedulingSimulator();
   initChecklist();
-
-  // Day 1 Simulators
-  initDay1QueueSimulator();
-  initDay1RaceSimulator();
-
-  // Day 2 Simulators
-  initDay2MpiP2PSimulator();
-  initDay2CollectiveSimulator();
-  initDay2GpuSimulator();
-
-  // Initial render for active day
-  switchDayView('day2');
 });
 
 /* ==========================================================================
@@ -30,146 +19,29 @@ document.addEventListener('DOMContentLoaded', () => {
    ========================================================================== */
 function initThemeToggle() {
   const toggleBtn = document.getElementById('themeToggle');
-  const body = document.getElementById('appBody');
+  const body = document.body;
   const icon = toggleBtn.querySelector('.toggle-icon');
 
-  const savedTheme = localStorage.getItem('pc_theme') || 'theme-dark';
-  body.classList.remove('theme-dark', 'theme-light');
-  body.classList.add(savedTheme);
+  const savedTheme = localStorage.getItem('pc101_theme') || 'theme-dark';
+  body.className = savedTheme;
   icon.textContent = savedTheme === 'theme-dark' ? '☀️' : '🌙';
 
   toggleBtn.addEventListener('click', () => {
     if (body.classList.contains('theme-dark')) {
       body.classList.replace('theme-dark', 'theme-light');
       icon.textContent = '🌙';
-      localStorage.setItem('pc_theme', 'theme-light');
+      localStorage.setItem('pc101_theme', 'theme-light');
     } else {
       body.classList.replace('theme-light', 'theme-dark');
       icon.textContent = '☀️';
-      localStorage.setItem('pc_theme', 'theme-dark');
+      localStorage.setItem('pc101_theme', 'theme-dark');
     }
+    if (window.renderAmdahlChart) window.renderAmdahlChart();
   });
 }
 
 /* ==========================================================================
-   2. Day Switcher (Day 1 OpenMP vs Day 2 MPI/GPU)
-   ========================================================================== */
-function initDaySwitcher() {
-  const btnD1 = document.getElementById('btnSwitchDay1');
-  const btnD2 = document.getElementById('btnSwitchDay2');
-
-  btnD1.addEventListener('click', () => switchDayView('day1'));
-  btnD2.addEventListener('click', () => switchDayView('day2'));
-}
-
-function switchDayView(day) {
-  CURRENT_DAY = day;
-  const body = document.getElementById('appBody');
-  const btnD1 = document.getElementById('btnSwitchDay1');
-  const btnD2 = document.getElementById('btnSwitchDay2');
-  const dayBadge = document.getElementById('currentDayBadge');
-  const heroPillText = document.getElementById('heroPillText');
-  const heroTitle = document.getElementById('heroTitle');
-  const heroSubtitle = document.getElementById('heroSubtitle');
-
-  if (day === 'day1') {
-    body.classList.replace('day-view-day2', 'day-view-day1');
-    btnD1.classList.add('active');
-    btnD2.classList.remove('active');
-    dayBadge.textContent = 'Day 1 • OpenMP';
-    heroPillText.textContent = 'Day 1 Active • Shared Memory, OpenMP & Performance Fundamentals';
-    heroTitle.innerHTML = 'From <span class="gradient-text-accent">One Chef</span> to a <br class="br-desktop"><span class="gradient-text-primary">High-Performance Shared Kitchen</span>';
-    heroSubtitle.innerHTML = 'Mastering multi-threaded parallel loops, shared/private scoping, race conditions, reduction clauses, and Amdahl\'s Law on multi-core CPUs.';
-  } else {
-    body.classList.replace('day-view-day1', 'day-view-day2');
-    btnD2.classList.add('active');
-    btnD1.classList.remove('active');
-    dayBadge.textContent = 'Day 2 • MPI & GPU';
-    heroPillText.textContent = 'Day 2 Active • Distributed Memory, MPI, GPU & Hybrid Systems';
-    heroTitle.innerHTML = 'From <span class="gradient-text-accent">One Kitchen</span> to <br class="br-desktop"><span class="gradient-text-primary">Multiple Restaurant Branches</span>';
-    heroSubtitle.innerHTML = 'Yesterday we orchestrated multiple chefs around one refrigerator. Today our restaurant operates <strong>4 regional branches</strong> (Chennai, Bangalore, Hosur, Coimbatore) exchanging <strong>MPI messages</strong> and powered by <strong>thousands of GPU workers</strong>.';
-  }
-
-  renderRosettaStone();
-  renderCodeLabTabs();
-  renderChecklist();
-}
-
-/* ==========================================================================
-   3. Rosetta Stone Data & Renderer
-   ========================================================================== */
-const ROSETTA_DATA_DAY1 = [
-  { icon: '🏢', term: 'Computer', arrow: '⇄', metaphor: 'Entire Restaurant', desc: 'The complete infrastructure delivering meals to hungry patrons.' },
-  { icon: '🍳', term: 'CPU', arrow: '⇄', metaphor: 'Main Kitchen Workspace', desc: 'The physical space where computational work gets cooked.' },
-  { icon: '👨🍳', term: 'CPU Core', arrow: '⇄', metaphor: 'Individual Chef', desc: 'A physical worker capable of executing instructions independently.' },
-  { icon: '🧵', term: 'Software Thread', arrow: '⇄', metaphor: 'Chef\'s Active Work Stream', desc: 'Lightweight execution unit dispatched to run on a core.' },
-  { icon: '📋', term: 'Program', arrow: '⇄', metaphor: 'Kitchen Recipe Book', desc: 'The complete set of instructions written down for execution.' },
-  { icon: '🍱', term: 'Task / Iteration', arrow: '⇄', metaphor: 'Food Order', desc: 'e.g., Order #42: Cook 1 Plate of Fried Rice.' },
-  { icon: '🧊', term: 'Shared RAM', arrow: '⇄', metaphor: 'Central Kitchen Refrigerator', desc: 'Shared ingredients that every chef in the kitchen can reach.' },
-  { icon: '🧂', term: 'CPU Cache', arrow: '⇄', metaphor: 'Chef\'s Spice Prep Counter', desc: 'Small, ultra-fast ingredient shelf right next to the cutting board.' }
-];
-
-const ROSETTA_DATA_DAY2 = [
-  { icon: '🏢', term: 'Cluster / Network', arrow: '⇄', metaphor: 'Restaurant Franchise Chain', desc: 'Multiple autonomous restaurant branches connected via network.' },
-  { icon: '🌐', term: 'Distributed Memory', arrow: '⇄', metaphor: 'Separate Branch Kitchens', desc: 'Each location has its own private refrigerator; no direct sharing.' },
-  { icon: '👨🍳', term: 'MPI Process', arrow: '⇄', metaphor: 'Branch Kitchen Manager', desc: 'Independent running OS process with its own private address space.' },
-  { icon: '🏷️', term: 'MPI Rank', arrow: '⇄', metaphor: 'Branch ID (0 = Chennai, 1 = Bangalore)', desc: 'Unique integer identifier (0 to size-1) assigned to each process.' },
-  { icon: '📞', term: 'MPI_COMM_WORLD', arrow: '⇄', metaphor: 'Franchise Intercom Group', desc: 'The global communicator containing all active branch processes.' },
-  { icon: '📦', term: 'MPI_Send / MPI_Recv', arrow: '⇄', metaphor: 'Tomato Courier Delivery', desc: 'Explicit point-to-point message dispatch and arrival envelope.' },
-  { icon: '📢', term: 'MPI_Bcast', arrow: '⇄', metaphor: 'Head Office Recipe Announcement', desc: 'HQ broadcasts one identical message to every branch.' },
-  { icon: '🥖', term: 'MPI_Scatter / Gather', arrow: '⇄', metaphor: 'Dough Dispatch & Bread Collection', desc: 'Slicing orders among branches and gathering completed batches.' },
-  { icon: '💰', term: 'MPI_Reduce', arrow: '⇄', metaphor: 'Calculating Total Franchise Revenue', desc: 'Combining partial branch sales into corporate totals (SUM/MAX).' },
-  { icon: '🏭', term: 'GPU Accelerator', arrow: '⇄', metaphor: 'Mass Automated Prep Factory', desc: '10,000 specialized workers executing identical small tasks at high speed.' },
-  { icon: '⚡', term: 'Hybrid Computing', arrow: '⇄', metaphor: 'HQ + Chefs + Prep Factory', desc: 'Combining MPI (across nodes) + OpenMP (inside nodes) + CUDA (on GPUs).' },
-  { icon: '🛑', term: 'MPI_Barrier', arrow: '⇄', metaphor: 'Synchronized Dinner Opening', desc: 'All branches halt and wait until every branch reaches the checkpoint.' }
-];
-
-function renderRosettaStone() {
-  const grid = document.getElementById('rosettaGrid');
-  const compBox = document.getElementById('comparisonBox');
-  const data = CURRENT_DAY === 'day1' ? ROSETTA_DATA_DAY1 : ROSETTA_DATA_DAY2;
-
-  grid.innerHTML = '';
-  data.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'rosetta-card';
-    card.innerHTML = `
-      <div class="rosetta-icon">${item.icon}</div>
-      <div class="rosetta-term">${item.term}</div>
-      <div class="rosetta-arrow">${item.arrow}</div>
-      <div class="rosetta-metaphor">${item.metaphor}</div>
-      <p>${item.desc}</p>
-    `;
-    grid.appendChild(card);
-  });
-
-  if (CURRENT_DAY === 'day1') {
-    compBox.innerHTML = `
-      <div class="comp-col">
-        <div class="comp-header"><span class="comp-badge bad">Sequential Execution</span><h3>1 Chef • 100 Orders</h3></div>
-        <p>1 Chef works through 100 orders one by one. Total Time = 100 × order_time.</p>
-      </div>
-      <div class="comp-col">
-        <div class="comp-header"><span class="comp-badge good">Parallel Execution (OpenMP)</span><h3>4 Chefs • 25 Orders Each</h3></div>
-        <p>4 Chefs concurrently work in 1 shared kitchen around 1 refrigerator. Speedup ≈ 4×.</p>
-      </div>
-    `;
-  } else {
-    compBox.innerHTML = `
-      <div class="comp-col">
-        <div class="comp-header"><span class="comp-badge bad">Shared Memory Limits</span><h3>1 Kitchen Motherboard (~64 Cores Max)</h3></div>
-        <p>A single motherboard cannot scale to thousands of cores due to physical memory bus saturation.</p>
-      </div>
-      <div class="comp-col">
-        <div class="comp-header"><span class="comp-badge good">Distributed Memory (MPI)</span><h3>Multiple Regional Branches (Millions of Cores)</h3></div>
-        <p>Connect independent computers across high-speed network. Scales to world-class supercomputers!</p>
-      </div>
-    `;
-  }
-}
-
-/* ==========================================================================
-   4. Architecture Tabs
+   2. Architecture Tabs
    ========================================================================== */
 function initArchTabs() {
   const tabBtns = document.querySelectorAll('#archTabs .tab-btn');
@@ -189,360 +61,292 @@ function initArchTabs() {
 }
 
 /* ==========================================================================
-   5. Interactive Code Lab
+   3. Interactive Amdahl's Law Calculator & Live Canvas Chart
    ========================================================================== */
-const CODE_LAB_DATABASE = {
-  // --- DAY 1 EXAMPLES ---
-  'd1-hello': {
-    day: 'day1',
+function initAmdahlCalculator() {
+  const serialSlider = document.getElementById('serialFractionSlider');
+  const coresSlider = document.getElementById('numCoresSlider');
+  const serialVal = document.getElementById('serialVal');
+  const parallelVal = document.getElementById('parallelVal');
+  const coresVal = document.getElementById('coresVal');
+  const actualSpeedup = document.getElementById('actualSpeedup');
+  const efficiencyVal = document.getElementById('efficiencyVal');
+  const maxSpeedup = document.getElementById('maxSpeedup');
+  const canvas = document.getElementById('amdahlChart');
+  const ctx = canvas.getContext('2d');
+
+  function updateCalculations() {
+    const S = parseFloat(serialSlider.value) / 100;
+    const P = 1 - S;
+    const N = parseInt(coresSlider.value, 10);
+
+    serialVal.textContent = `${Math.round(S * 100)}%`;
+    parallelVal.textContent = `${Math.round(P * 100)}%`;
+    coresVal.textContent = `${N} ${N === 1 ? 'Chef (Core)' : 'Chefs (Cores)'}`;
+
+    // Amdahl's law: Speedup = 1 / (S + P/N)
+    const speedup = 1 / (S + (P / N));
+    const efficiency = (speedup / N) * 100;
+    const maxS = S === 0 ? '∞' : (1 / S).toFixed(2) + '×';
+
+    actualSpeedup.textContent = `${speedup.toFixed(2)}×`;
+    efficiencyVal.textContent = `${efficiency.toFixed(1)}%`;
+    maxSpeedup.textContent = maxS;
+
+    drawChart(S, P, N);
+  }
+
+  function drawChart(S, P, currentN) {
+    const isDark = document.body.classList.contains('theme-dark');
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.clearRect(0, 0, width, height);
+
+    const padLeft = 45;
+    const padBottom = 35;
+    const padTop = 20;
+    const padRight = 20;
+    const chartW = width - padLeft - padRight;
+    const chartH = height - padTop - padBottom;
+
+    const maxN = 32;
+    const maxTheoretical = S === 0 ? 16 : Math.min(16, Math.ceil(1 / S) + 2);
+    const yMax = Math.max(8, maxTheoretical);
+
+    // Draw Grid Lines
+    ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.font = '10px Fira Code';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+
+    for (let y = 0; y <= yMax; y += 2) {
+      const yPos = padTop + chartH - (y / yMax) * chartH;
+      ctx.beginPath();
+      ctx.moveTo(padLeft, yPos);
+      ctx.lineTo(padLeft + chartW, yPos);
+      ctx.stroke();
+      ctx.fillText(`${y}×`, 10, yPos + 3);
+    }
+
+    // X Axis Labels
+    const xTicks = [1, 4, 8, 16, 24, 32];
+    xTicks.forEach(n => {
+      const xPos = padLeft + ((n - 1) / (maxN - 1)) * chartW;
+      ctx.fillText(`${n}`, xPos - 4, height - 12);
+    });
+
+    // Draw Ideal Linear Speedup (N)
+    ctx.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.3)' : 'rgba(14, 165, 233, 0.3)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    for (let n = 1; n <= maxN; n++) {
+      const x = padLeft + ((n - 1) / (maxN - 1)) * chartW;
+      const y = padTop + chartH - (Math.min(n, yMax) / yMax) * chartH;
+      if (n === 1) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw Asymptote (Theoretical Max)
+    if (S > 0) {
+      const maxLimit = 1 / S;
+      const yLimitPos = padTop + chartH - (Math.min(maxLimit, yMax) / yMax) * chartH;
+      ctx.strokeStyle = 'rgba(244, 63, 94, 0.5)';
+      ctx.setLineDash([2, 4]);
+      ctx.beginPath();
+      ctx.moveTo(padLeft, yLimitPos);
+      ctx.lineTo(padLeft + chartW, yLimitPos);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Draw Actual Amdahl Curve
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    let curDotX = 0;
+    let curDotY = 0;
+
+    for (let n = 1; n <= maxN; n++) {
+      const sn = 1 / (S + (P / n));
+      const x = padLeft + ((n - 1) / (maxN - 1)) * chartW;
+      const y = padTop + chartH - (Math.min(sn, yMax) / yMax) * chartH;
+      if (n === 1) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+
+      if (n === currentN) {
+        curDotX = x;
+        curDotY = y;
+      }
+    }
+    ctx.stroke();
+
+    // Draw Active Dot
+    if (curDotX > 0) {
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(curDotX, curDotY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+
+  serialSlider.addEventListener('input', updateCalculations);
+  coresSlider.addEventListener('input', updateCalculations);
+
+  window.renderAmdahlChart = updateCalculations;
+  updateCalculations();
+}
+
+/* ==========================================================================
+   4. OpenMP Hands-on Code Lab
+   ========================================================================== */
+const CODE_DATABASE = {
+  hello: {
     fileName: '01_hello_openmp.c',
-    title: 'Hello OpenMP',
-    code: `#include <stdio.h>\n#include <omp.h>\n\nint main()\n{\n    omp_set_num_threads(4);\n    #pragma omp parallel\n    {\n        int id = omp_get_thread_num();\n        int total = omp_get_num_threads();\n        printf("👨🍳 Chef %d of %d reporting for duty!\\n", id, total);\n    }\n    return 0;\n}`,
-    explanation: `<p><strong>Core Directives:</strong> <code>#pragma omp parallel</code> forks a team of concurrent threads. <code>omp_get_thread_num()</code> returns calling thread ID.</p>`,
+    code: `#include <stdio.h>\n#include <omp.h>\n\nint main()\n{\n    // Set number of threads to 4\n    omp_set_num_threads(4);\n\n    #pragma omp parallel\n    {\n        // Each thread obtains its unique worker ID (0, 1, 2, 3)\n        int id = omp_get_thread_num();\n        int total = omp_get_num_threads();\n\n        printf("👨🍳 Chef %d reporting for duty! (Total Chefs = %d)\\n", id, total);\n    }\n\n    return 0;\n}`,
+    explanation: `
+      <p><strong>Core Directives & Functions:</strong></p>
+      <ul>
+        <li><code>#include &lt;omp.h&gt;</code>: Provides headers and prototypes for OpenMP runtime functions.</li>
+        <li><code>#pragma omp parallel</code>: Directs the compiler to fork a team of concurrent threads executing the enclosed block.</li>
+        <li><code>omp_get_thread_num()</code>: Returns the calling thread's unique index (starting at 0 for the Master thread).</li>
+        <li><em>Note:</em> The execution order in terminal is non-deterministic because OS schedules threads concurrently!</li>
+      </ul>
+    `,
     compileCmd: 'gcc -fopenmp 01_hello_openmp.c -o hello.exe',
     runCmd: '.\\hello.exe'
   },
-  'd1-parallel-for': {
-    day: 'day1',
+  'parallel-for': {
     fileName: '02_array_parallel.c',
-    title: 'Parallel Loop',
-    code: `#include <stdio.h>\n#include <omp.h>\n#define N 10\n\nint main()\n{\n    int A[N];\n    #pragma omp parallel for\n    for(int i = 0; i < N; i++) {\n        A[i] = i * i;\n        printf("Thread %d processed index %d -> %d\\n", omp_get_thread_num(), i, A[i]);\n    }\n    return 0;\n}`,
-    explanation: `<p><strong>Loop Parallelization:</strong> <code>#pragma omp parallel for</code> divides loop iterations across threads.</p>`,
+    code: `#include <stdio.h>\n#include <omp.h>\n\n#define N 10\n\nint main()\n{\n    int A[N];\n\n    // OpenMP splits the 10 loop iterations across available threads\n    #pragma omp parallel for\n    for(int i = 0; i < N; i++)\n    {\n        int tid = omp_get_thread_num();\n        A[i] = i * i;\n        printf("Thread %d processed index %d -> %d\\n", tid, i, A[i]);\n    }\n\n    printf("\\nFinal Array Result:\\n");\n    for(int i = 0; i < N; i++) {\n        printf("%d ", A[i]);\n    }\n    printf("\\n");\n\n    return 0;\n}`,
+    explanation: `
+      <p><strong>Parallelizing Loops:</strong></p>
+      <ul>
+        <li><code>#pragma omp parallel for</code>: Automatically divides independent loop iterations among active threads.</li>
+        <li>The loop iteration variable <code>i</code> is made <strong>private</strong> to each thread by default.</li>
+        <li>Array <code>A</code> is <strong>shared</strong> so all threads write to their assigned disjoint slice without collisions.</li>
+      </ul>
+    `,
     compileCmd: 'gcc -fopenmp 02_array_parallel.c -o array.exe',
     runCmd: '.\\array.exe'
   },
-  'd1-reduction': {
-    day: 'day1',
+  'race-condition': {
+    fileName: '03_race_condition_vs_critical.c',
+    code: `#include <stdio.h>\n#include <omp.h>\n\nint main()\n{\n    int sum_buggy = 0;\n\n    // ⚠️ BUG: Multiple threads modify 'sum_buggy' simultaneously without locks!\n    #pragma omp parallel for\n    for(int i = 1; i <= 1000; i++) {\n        sum_buggy += i; // READ -> MODIFY -> WRITE data race!\n    }\n    printf("1. Buggy Sum (Data Race)     = %d (Expected: 500500)\\n", sum_buggy);\n\n    // 🛡️ FIX using critical directive:\n    int sum_safe = 0;\n    #pragma omp parallel for\n    for(int i = 1; i <= 1000; i++) {\n        #pragma omp critical\n        {\n            sum_safe += i; // Only 1 thread enters at a time!\n        }\n    }\n    printf("2. Safe Sum (Critical Section) = %d (Expected: 500500)\\n", sum_safe);\n    return 0;\n}`,
+    explanation: `
+      <p><strong>The Shared Cash Register Bug:</strong></p>
+      <ul>
+        <li>When multiple threads perform <code>sum += i</code> concurrently, read/modify/write steps interleave, resulting in lost updates.</li>
+        <li><code>#pragma omp critical</code>: Enforces mutual exclusion — only one thread is permitted into the critical cash counter at a time.</li>
+      </ul>
+    `,
+    compileCmd: 'gcc -fopenmp 03_race_condition_vs_critical.c -o race.exe',
+    runCmd: '.\\race.exe'
+  },
+  reduction: {
     fileName: '04_reduction.c',
-    title: 'Reduction Clause',
-    code: `#include <stdio.h>\n#include <omp.h>\n\nint main()\n{\n    int sum = 0;\n    #pragma omp parallel for reduction(+:sum)\n    for(int i = 1; i <= 1000; i++) {\n        sum += i;\n    }\n    printf("Correct Parallel Sum = %d (Expected: 500500)\\n", sum);\n    return 0;\n}`,
-    explanation: `<p><strong>Lock-free Tree Reduction:</strong> Each thread accumulates into a private local variable; OpenMP combines results at loop exit.</p>`,
+    code: `#include <stdio.h>\n#include <omp.h>\n\nint main()\n{\n    int sum = 0;\n\n    // 🚀 Optimal Shared-Memory Reduction\n    #pragma omp parallel for reduction(+:sum)\n    for(int i = 1; i <= 1000; i++)\n    {\n        sum += i; // Each thread accumulates into private local copy\n    }\n\n    // At loop exit, OpenMP combines all local sums into master sum!\n    printf("Correct Parallel Sum = %d (Expected 500500)\\n", sum);\n    return 0;\n}`,
+    explanation: `
+      <p><strong>The Reduction Clause:</strong></p>
+      <ul>
+        <li><code>reduction(+:sum)</code>: Gives each thread a private accumulator initialized to 0.</li>
+        <li>Threads sum their own slice locally at full CPU speed without locks or waiting.</li>
+        <li>When all threads complete, OpenMP adds together the local sums in a fast tree reduction.</li>
+      </ul>
+    `,
     compileCmd: 'gcc -fopenmp 04_reduction.c -o reduction.exe',
     runCmd: '.\\reduction.exe'
   },
-
-  // --- DAY 2 EXAMPLES ---
-  'd2-hello': {
-    day: 'day2',
-    fileName: '01_mpi_hello.c',
-    title: '01. MPI Hello World',
-    code: `#include <mpi.h>\n#include <stdio.h>\n\nint main(int argc, char** argv)\n{\n    MPI_Init(&argc, &argv);\n\n    int rank, size;\n    MPI_Comm_rank(MPI_COMM_WORLD, &rank);\n    MPI_Comm_size(MPI_COMM_WORLD, &size);\n\n    printf("👨🍳 [Rank %d of %d] Branch online & ready to cook!\\n", rank, size);\n\n    MPI_Finalize();\n    return 0;\n}`,
-    explanation: `<p><strong>MPI Lifecycle:</strong> <code>MPI_Init</code> initializes communication; <code>MPI_Comm_rank</code> gets branch ID; <code>MPI_Comm_size</code> gets total branch count; <code>MPI_Finalize</code> shuts down cleanly.</p>`,
-    compileCmd: 'mpicc 01_mpi_hello.c -o hello_mpi.exe',
-    runCmd: 'mpiexec -n 4 .\\hello_mpi.exe'
+  scheduling: {
+    fileName: '05_scheduling.c',
+    code: `#include <stdio.h>\n#include <omp.h>\n\nint main()\n{\n    printf("--- Static Scheduling (Equal chunks before loop) ---\\n");\n    #pragma omp parallel for schedule(static, 2)\n    for(int i = 0; i < 8; i++) {\n        printf("Static: Thread %d handling task %d\\n", omp_get_thread_num(), i);\n    }\n\n    printf("\\n--- Dynamic Scheduling (Grab chunk when idle) ---\\n");\n    #pragma omp parallel for schedule(dynamic, 1)\n    for(int i = 0; i < 8; i++) {\n        printf("Dynamic: Thread %d handling task %d\\n", omp_get_thread_num(), i);\n    }\n    return 0;\n}`,
+    explanation: `
+      <p><strong>Static vs Dynamic Scheduling:</strong></p>
+      <ul>
+        <li><code>schedule(static, chunk)</code>: Deterministically distributes chunks to threads before loop execution. Lowest scheduling overhead.</li>
+        <li><code>schedule(dynamic, chunk)</code>: Threads pull next available chunk from a shared work pool upon finishing. Perfect for uneven workloads (e.g. quick tea vs slow biryani).</li>
+      </ul>
+    `,
+    compileCmd: 'gcc -fopenmp 05_scheduling.c -o schedule.exe',
+    runCmd: '.\\schedule.exe'
   },
-  'd2-send-recv': {
-    day: 'day2',
-    fileName: '02_mpi_send_recv.c',
-    title: '02. MPI Send & Recv',
-    code: `#include <mpi.h>\n#include <stdio.h>\n\nint main(int argc, char** argv)\n{\n    MPI_Init(&argc, &argv);\n    int rank;\n    MPI_Comm_rank(MPI_COMM_WORLD, &rank);\n    int tomato_kg;\n\n    if (rank == 0) {\n        tomato_kg = 42;\n        printf("📦 Branch 0: Sending %d kg tomatoes to Branch 1...\\n", tomato_kg);\n        MPI_Send(&tomato_kg, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);\n    }\n    else if (rank == 1) {\n        MPI_Recv(&tomato_kg, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);\n        printf("🍅 Branch 1: Received %d kg tomatoes! Ready to cook.\\n", tomato_kg);\n    }\n    MPI_Finalize();\n    return 0;\n}`,
-    explanation: `<p><strong>Point-to-Point Message Envelope:</strong> Address, Count, Datatype, Destination/Source Rank, Tag, and Communicator.</p>`,
-    compileCmd: 'mpicc 02_mpi_send_recv.c -o send_recv.exe',
-    runCmd: 'mpiexec -n 2 .\\send_recv.exe'
+  matrix: {
+    fileName: '06_matrix_mult.c',
+    code: `#include <stdio.h>\n#include <omp.h>\n\n#define N 3\n\nint main()\n{\n    int A[N][N] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\n    int B[N][N] = {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}};\n    int C[N][N] = {0};\n\n    // collapse(2) merges the 2 outer loops into a single N*N iteration space!\n    #pragma omp parallel for collapse(2)\n    for(int i = 0; i < N; i++)\n    {\n        for(int j = 0; j < N; j++)\n        {\n            int sum = 0;\n            for(int k = 0; k < N; k++) {\n                sum += A[i][k] * B[k][j];\n            }\n            C[i][j] = sum;\n        }\n    }\n\n    printf("Result Matrix C (3x3):\\n");\n    for(int i = 0; i < N; i++) {\n        for(int j = 0; j < N; j++) printf("%4d ", C[i][j]);\n        printf("\\n");\n    }\n    return 0;\n}`,
+    explanation: `
+      <p><strong>Matrix Multiplication & collapse(2):</strong></p>
+      <ul>
+        <li>Computing each element <code>C[i][j]</code> is completely independent (like calculating separate table bills).</li>
+        <li><code>collapse(2)</code>: Flattens the <code>i</code> and <code>j</code> nested loops into a single large loop of size \\(N \\times N\\).</li>
+      </ul>
+    `,
+    compileCmd: 'gcc -fopenmp 06_matrix_mult.c -o matmult.exe',
+    runCmd: '.\\matmult.exe'
   },
-  'd2-bcast': {
-    day: 'day2',
-    fileName: '03_mpi_bcast.c',
-    title: '03. MPI Broadcast',
-    code: `#include <mpi.h>\n#include <stdio.h>\n\nint main(int argc, char** argv)\n{\n    MPI_Init(&argc, &argv);\n    int rank;\n    MPI_Comm_rank(MPI_COMM_WORLD, &rank);\n    int recipe_code = 0;\n\n    if (rank == 0) {\n        recipe_code = 9021; // Special Dum Biryani Promo Code\n        printf("📢 [HQ]: Broadcasting Promo Code %d to all branches...\\n", recipe_code);\n    }\n\n    // 1-to-All Broadcast\n    MPI_Bcast(&recipe_code, 1, MPI_INT, 0, MPI_COMM_WORLD);\n    printf("🍛 [Branch %d]: Confirmed recipe promo code %d\\n", rank, recipe_code);\n\n    MPI_Finalize();\n    return 0;\n}`,
-    explanation: `<p><strong>MPI_Bcast:</strong> Root sends data to all processes in the communicator simultaneously without explicit loops.</p>`,
-    compileCmd: 'mpicc 03_mpi_bcast.c -o bcast.exe',
-    runCmd: 'mpiexec -n 4 .\\bcast.exe'
-  },
-  'd2-scatter-gather': {
-    day: 'day2',
-    fileName: '04_mpi_scatter_gather.c',
-    title: '04. Scatter & Gather',
-    code: `#include <mpi.h>\n#include <stdio.h>\n#include <stdlib.h>\n\nint main(int argc, char** argv)\n{\n    MPI_Init(&argc, &argv);\n    int rank, size;\n    MPI_Comm_rank(MPI_COMM_WORLD, &rank);\n    MPI_Comm_size(MPI_COMM_WORLD, &size);\n\n    int master_dough[4] = {10, 20, 30, 40};\n    int my_dough = 0;\n    int my_bread = 0;\n    int all_breads[4];\n\n    // Scatter dough to branches\n    MPI_Scatter(master_dough, 1, MPI_INT, &my_dough, 1, MPI_INT, 0, MPI_COMM_WORLD);\n    my_bread = my_dough * 2; // Bake bread\n\n    // Gather baked bread back to HQ\n    MPI_Gather(&my_bread, 1, MPI_INT, all_breads, 1, MPI_INT, 0, MPI_COMM_WORLD);\n\n    if (rank == 0) {\n        printf("🧺 [HQ]: Gathered baked bread from all branches: [%d, %d, %d, %d]\\n",\n               all_breads[0], all_breads[1], all_breads[2], all_breads[3]);\n    }\n    MPI_Finalize();\n    return 0;\n}`,
-    explanation: `<p><strong>Scatter & Gather:</strong> <code>MPI_Scatter</code> divides an array into equal disjoint slices. <code>MPI_Gather</code> collects slices back into one master buffer.</p>`,
-    compileCmd: 'mpicc 04_mpi_scatter_gather.c -o scatter_gather.exe',
-    runCmd: 'mpiexec -n 4 .\\scatter_gather.exe'
-  },
-  'd2-reduce': {
-    day: 'day2',
-    fileName: '05_mpi_reduce_sales.c',
-    title: '05. MPI Reduce Sales',
-    code: `#include <mpi.h>\n#include <stdio.h>\n\nint main(int argc, char** argv)\n{\n    MPI_Init(&argc, &argv);\n    int rank;\n    MPI_Comm_rank(MPI_COMM_WORLD, &rank);\n\n    int my_sales = (rank + 1) * 25000;\n    int total_franchise_sales = 0;\n    int max_branch_sales = 0;\n\n    MPI_Reduce(&my_sales, &total_franchise_sales, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);\n    MPI_Reduce(&my_sales, &max_branch_sales, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);\n\n    if (rank == 0) {\n        printf("💰 Total Corporate Revenue: Rs. %d\\n", total_franchise_sales);\n        printf("🌟 Top Single Branch Sales: Rs. %d\\n", max_branch_sales);\n    }\n    MPI_Finalize();\n    return 0;\n}`,
-    explanation: `<p><strong>Global Reductions:</strong> <code>MPI_Reduce</code> combines data from all processes using an associative operator (<code>MPI_SUM</code>, <code>MPI_MAX</code>, <code>MPI_MIN</code>).</p>`,
-    compileCmd: 'mpicc 05_mpi_reduce_sales.c -o reduce_sales.exe',
-    runCmd: 'mpiexec -n 4 .\\reduce_sales.exe'
-  },
-  'd2-trapezoidal': {
-    day: 'day2',
-    fileName: '06_mpi_trapezoidal.c',
-    title: '06. Trapezoidal Rule (PI)',
-    code: `#include <mpi.h>\n#include <stdio.h>\n#include <math.h>\n\ndouble f(double x) { return 4.0 / (1.0 + x * x); }\n\ndouble Trap(double a, double b, int n, double h) {\n    double est = (f(a) + f(b)) / 2.0;\n    for(int i = 1; i < n; i++) est += f(a + i * h);\n    return est * h;\n}\n\nint main(int argc, char** argv)\n{\n    MPI_Init(&argc, &argv);\n    int rank, size;\n    MPI_Comm_rank(MPI_COMM_WORLD, &rank);\n    MPI_Comm_size(MPI_COMM_WORLD, &size);\n\n    double a = 0.0, b = 1.0; int n = 50000000;\n    double h = (b - a) / n;\n    int local_n = n / size;\n    double local_a = a + rank * local_n * h;\n    double local_b = local_a + local_n * h;\n\n    double local_int = Trap(local_a, local_b, local_n, h);\n    double total_int = 0.0;\n\n    MPI_Reduce(&local_int, &total_int, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);\n    if (rank == 0) printf("🎯 Computed PI: %.12f (Error: %.2e)\\n", total_int, fabs(total_int - 3.141592653589));\n    MPI_Finalize();\n    return 0;\n}`,
-    explanation: `<p><strong>Numerical Integration in Parallel:</strong> Each process computes the area of its local sub-interval; <code>MPI_Reduce</code> sums all sub-areas into total PI value.</p>`,
-    compileCmd: 'mpicc 06_mpi_trapezoidal.c -o trap_pi.exe -lm',
-    runCmd: 'mpiexec -n 4 .\\trap_pi.exe'
-  },
-  'd2-cuda': {
-    day: 'day2',
-    fileName: '08_cuda_vector_add.cu',
-    title: '07. CUDA GPU Vector Add',
-    code: `#include <stdio.h>\n#include <stdlib.h>\n#define N 1000000\n\n#ifdef __CUDACC__\n__global__ void VectorAddKernel(const float* A, const float* B, float* C, int n) {\n    int i = blockIdx.x * blockDim.x + threadIdx.x;\n    if (i < n) C[i] = A[i] + B[i];\n}\n#endif\n\nint main() {\n    size_t size = N * sizeof(float);\n    float *h_A = (float*)malloc(size), *h_B = (float*)malloc(size), *h_C = (float*)malloc(size);\n    for(int i=0; i<N; i++) { h_A[i]=1.5f; h_B[i]=2.5f; }\n\n    #ifdef __CUDACC__\n    float *d_A, *d_B, *d_C;\n    cudaMalloc((void**)&d_A, size); cudaMalloc((void**)&d_B, size); cudaMalloc((void**)&d_C, size);\n    cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);\n    cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);\n    VectorAddKernel<<<(N+255)/256, 256>>>(d_A, d_B, d_C, N);\n    cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);\n    cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);\n    #else\n    for(int i=0; i<N; i++) h_C[i] = h_A[i] + h_B[i];\n    #endif\n\n    printf("✅ Verification: C[0]=%.2f, C[N-1]=%.2f\\n", h_C[0], h_C[N-1]);\n    return 0;\n}`,
-    explanation: `<p><strong>CUDA GPU Kernel:</strong> 10,000s of GPU threads execute <code>VectorAddKernel</code> concurrently. Thread index calculated via <code>blockIdx.x * blockDim.x + threadIdx.x</code>.</p>`,
-    compileCmd: 'nvcc 08_cuda_vector_add.cu -o vector_add.exe (or gcc in CPU fallback mode)',
-    runCmd: '.\\vector_add.exe'
-  },
-  'd2-capstone': {
-    day: 'day2',
-    fileName: '10_challenge_sales_analyzer.c',
-    title: '08. Capstone Sales Analyzer',
-    code: `#include <mpi.h>\n#include <stdio.h>\n#define ITEMS 5\n#define BRANCHES 4\n\nint main(int argc, char** argv)\n{\n    MPI_Init(&argc, &argv);\n    int rank;\n    MPI_Comm_rank(MPI_COMM_WORLD, &rank);\n\n    int all_sales[20] = {150,280,420,190,310, 520,190,240,380,490, 95,120,150,210,180, 330,450,290,200,580};\n    int local_sales[ITEMS];\n\n    // 1. Scatter sales to 4 branches\n    MPI_Scatter(all_sales, ITEMS, MPI_INT, local_sales, ITEMS, MPI_INT, 0, MPI_COMM_WORLD);\n\n    // 2. Local statistics\n    int local_total = 0, local_max = local_sales[0];\n    for(int i=0; i<ITEMS; i++) {\n        local_total += local_sales[i];\n        if (local_sales[i] > local_max) local_max = local_sales[i];\n    }\n\n    // 3. Global Reductions to HQ\n    int global_revenue = 0, global_max = 0;\n    MPI_Reduce(&local_total, &global_revenue, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);\n    MPI_Reduce(&local_max, &global_max, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);\n\n    if (rank == 0) {\n        printf("🏆 GRAND FINANCIAL AUDIT:\\n");\n        printf("   Total Corporate Revenue: Rs. %d\\n", global_revenue);\n        printf("   Highest Single Item:     Rs. %d\\n", global_max);\n    }\n    MPI_Finalize();\n    return 0;\n}`,
-    explanation: `<p><strong>Capstone Project:</strong> Combines <code>MPI_Scatter</code>, local branch aggregation, <code>MPI_Reduce</code>, and benchmarking into a complete enterprise analytics pipeline.</p>`,
-    compileCmd: 'mpicc 10_challenge_sales_analyzer.c -o capstone.exe',
-    runCmd: 'mpiexec -n 4 .\\capstone.exe'
+  timing: {
+    fileName: '07_benchmark_wtime.c',
+    code: `#include <stdio.h>\n#include <omp.h>\n\n#define SIZE 20000000\n\nint main()\n{\n    static double arr[SIZE];\n    double start_time, end_time, elapsed;\n\n    for(int threads = 1; threads <= 8; threads *= 2)\n    {\n        omp_set_num_threads(threads);\n        start_time = omp_get_wtime();\n\n        #pragma omp parallel for\n        for(int i = 0; i < SIZE; i++) {\n            arr[i] = i * 0.5 + 3.14159;\n        }\n\n        end_time = omp_get_wtime();\n        elapsed = end_time - start_time;\n        printf("Threads: %d | Time: %f seconds\\n", threads, elapsed);\n    }\n    return 0;\n}`,
+    explanation: `
+      <p><strong>High-Resolution Wall-Clock Benchmarking:</strong></p>
+      <ul>
+        <li><code>omp_get_wtime()</code>: Returns elapsed wall-clock time in seconds with microsecond resolution.</li>
+        <li>Compute <code>Speedup = Time_1 / Time_N</code> to experimentally verify performance scaling!</li>
+      </ul>
+    `,
+    compileCmd: 'gcc -fopenmp 07_benchmark_wtime.c -o benchmark.exe',
+    runCmd: '.\\benchmark.exe'
   }
 };
 
-function renderCodeLabTabs() {
-  const nav = document.getElementById('codeLabNav');
-  nav.innerHTML = '';
-
-  let firstKey = null;
-
-  for (const [key, item] of Object.entries(CODE_LAB_DATABASE)) {
-    if (item.day === CURRENT_DAY) {
-      if (!firstKey) firstKey = key;
-      const btn = document.createElement('button');
-      btn.className = 'lab-tab';
-      btn.setAttribute('data-code', key);
-      btn.innerHTML = `
-        <span class="tab-title">${item.title}</span>
-      `;
-      btn.addEventListener('click', () => loadCodeLab(key));
-      nav.appendChild(btn);
-    }
-  }
-
-  if (firstKey) loadCodeLab(firstKey);
-}
-
-function loadCodeLab(key) {
-  const data = CODE_LAB_DATABASE[key];
-  if (!data) return;
-
-  document.getElementById('currentFileName').textContent = data.fileName;
-  document.getElementById('codeContent').textContent = data.code;
-  document.getElementById('expBody').innerHTML = data.explanation;
-  document.getElementById('compileCmd').textContent = data.compileCmd;
-  document.getElementById('runCmd').textContent = data.runCmd;
-
-  document.querySelectorAll('#codeLabNav .lab-tab').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-code') === key);
-  });
-}
-
 function initCodeLab() {
+  const tabs = document.querySelectorAll('#codeLabNav .lab-tab');
+  const codeContent = document.getElementById('codeContent');
+  const fileName = document.getElementById('currentFileName');
+  const expBody = document.getElementById('expBody');
+  const compileCmd = document.getElementById('compileCmd');
+  const runCmd = document.getElementById('runCmd');
   const copyBtn = document.getElementById('copyCodeBtn');
+
+  function renderLab(key) {
+    const data = CODE_DATABASE[key];
+    if (!data) return;
+
+    fileName.textContent = data.fileName;
+    codeContent.textContent = data.code;
+    expBody.innerHTML = data.explanation;
+    compileCmd.textContent = data.compileCmd;
+    runCmd.textContent = data.runCmd;
+
+    tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-code') === key));
+  }
+
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      renderLab(t.getAttribute('data-code'));
+    });
+  });
+
   copyBtn.addEventListener('click', () => {
-    const code = document.getElementById('codeContent').textContent;
-    navigator.clipboard.writeText(code).then(() => {
-      const orig = copyBtn.innerHTML;
+    navigator.clipboard.writeText(codeContent.textContent).then(() => {
+      const origText = copyBtn.innerHTML;
       copyBtn.innerHTML = '<span>✅ Copied!</span>';
-      setTimeout(() => { copyBtn.innerHTML = orig; }, 1800);
-    });
-  });
-}
-
-/* ==========================================================================
-   6. Day 2 Simulator 1: Point-to-Point Tomato Dispatch & Deadlock
-   ========================================================================== */
-function initDay2MpiP2PSimulator() {
-  const btnSend = document.getElementById('btnRunTomatoSend');
-  const btnDeadlock = document.getElementById('btnRunDeadlockDemo');
-  const btnReset = document.getElementById('btnResetMpiP2P');
-  const van = document.getElementById('courierVan');
-  const chennaiNode = document.getElementById('nodeChennai');
-  const bangaloreNode = document.getElementById('nodeBangalore');
-  const chennaiStatus = document.getElementById('chennaiStatus');
-  const bangaloreStatus = document.getElementById('bangaloreStatus');
-  const chennaiInv = document.getElementById('chennaiInventory');
-  const bangaloreInv = document.getElementById('bangaloreInventory');
-  const log = document.getElementById('mpiP2PLog');
-
-  function resetP2P() {
-    van.style.left = '10px';
-    van.innerHTML = '🚚 <span>[Empty]</span>';
-    chennaiNode.className = 'branch-node';
-    bangaloreNode.className = 'branch-node';
-    chennaiStatus.textContent = 'IDLE';
-    bangaloreStatus.textContent = 'IDLE';
-    chennaiInv.textContent = 'Inventory: 100 kg Tomatoes';
-    bangaloreInv.textContent = 'Inventory: 0 kg Tomatoes (LOW!)';
-    log.textContent = 'Simulator Ready. Click "Send 42kg Tomatoes" or "Trigger Deadlock".';
-  }
-
-  btnSend.addEventListener('click', () => {
-    resetP2P();
-    chennaiNode.classList.add('active-sender');
-    chennaiStatus.textContent = 'CALLING MPI_Send(&tomatoes, 42, MPI_INT, 1, tag=0)';
-    chennaiInv.textContent = 'Inventory: 58 kg Tomatoes (-42kg)';
-    van.innerHTML = '🚚 <span>[42kg 🍅]</span>';
-    log.textContent = '1. Branch 0 (Chennai) packs 42 kg into MPI network buffer and dispatches courier...';
-
-    setTimeout(() => {
-      van.style.left = 'calc(100% - 110px)';
-      bangaloreNode.classList.add('active-receiver');
-      bangaloreStatus.textContent = 'BLOCKING ON MPI_Recv(..., source=0)';
-      log.textContent = '2. Courier travelling over highway network bus... Bangalore waiting at loading dock.';
-    }, 400);
-
-    setTimeout(() => {
-      bangaloreStatus.textContent = 'MPI_Recv SUCCESSFUL!';
-      bangaloreInv.textContent = 'Inventory: 42 kg Tomatoes (+42kg)';
-      log.innerHTML = '✅ <strong>DELIVERY COMPLETE:</strong> Branch 1 unpacked envelope. Both processes proceed to cooking!';
-    }, 2000);
-  });
-
-  btnDeadlock.addEventListener('click', () => {
-    resetP2P();
-    chennaiNode.classList.add('deadlock-freeze');
-    bangaloreNode.classList.add('deadlock-freeze');
-    chennaiStatus.textContent = 'BLOCKING: MPI_Recv(from=1)...';
-    bangaloreStatus.textContent = 'BLOCKING: MPI_Recv(from=0)...';
-    van.style.left = '45%';
-    van.innerHTML = '🛑 <span>[DEADLOCK]</span>';
-    log.innerHTML = '❌ <strong>FATAL DEADLOCK:</strong> Chennai is waiting for Bangalore to send butter, but Bangalore is waiting for Chennai to send spices. Neither sends first. Cluster is frozen!';
-  });
-
-  btnReset.addEventListener('click', resetP2P);
-}
-
-/* ==========================================================================
-   7. Day 2 Simulator 2: Collective Communication
-   ========================================================================== */
-function initDay2CollectiveSimulator() {
-  const btnBcast = document.getElementById('btnSimBcast');
-  const btnScatter = document.getElementById('btnSimScatter');
-  const btnGather = document.getElementById('btnSimGather');
-  const btnReduce = document.getElementById('btnSimReduce');
-  const hqBox = document.getElementById('hqDataBox');
-  const slots = [
-    document.getElementById('slotB0'),
-    document.getElementById('slotB1'),
-    document.getElementById('slotB2'),
-    document.getElementById('slotB3')
-  ];
-  const summary = document.getElementById('collectiveSummary');
-
-  function clearSlots() {
-    slots.forEach(s => {
-      s.className = 'branch-slot';
-      s.textContent = '-';
-    });
-  }
-
-  btnBcast.addEventListener('click', () => {
-    clearSlots();
-    hqBox.textContent = 'Recipe Code: #9021 (Dum Biryani)';
-    slots.forEach((s, idx) => {
       setTimeout(() => {
-        s.classList.add('active-token');
-        s.textContent = '#9021';
-      }, idx * 250);
+        copyBtn.innerHTML = origText;
+      }, 1800);
     });
-    summary.innerHTML = '📢 <strong>MPI_Bcast:</strong> Headquarters broadcasted the exact same Recipe Code #9021 to all 4 branches simultaneously!';
   });
 
-  btnScatter.addEventListener('click', () => {
-    clearSlots();
-    const doughBatches = ['10 kg Dough', '20 kg Dough', '30 kg Dough', '40 kg Dough'];
-    hqBox.textContent = 'Dough Master Array: [10, 20, 30, 40]';
-    slots.forEach((s, idx) => {
-      setTimeout(() => {
-        s.classList.add('active-token');
-        s.textContent = doughBatches[idx];
-      }, idx * 250);
-    });
-    summary.innerHTML = '🥖 <strong>MPI_Scatter:</strong> Master array of 100 kg dough was divided into equal pieces and distributed (Piece i -> Branch i)!';
-  });
-
-  btnGather.addEventListener('click', () => {
-    clearSlots();
-    const bakedItems = ['20 Breads', '40 Breads', '60 Breads', '80 Breads'];
-    slots.forEach((s, idx) => {
-      s.textContent = bakedItems[idx];
-    });
-    setTimeout(() => {
-      hqBox.textContent = 'HQ Assembled Inventory: [20, 40, 60, 80] Breads';
-      summary.innerHTML = '🧺 <strong>MPI_Gather:</strong> Each branch sent its local baked bread count back to HQ to assemble the full corporate inventory!';
-    }, 600);
-  });
-
-  btnReduce.addEventListener('click', () => {
-    clearSlots();
-    const branchSales = [50000, 75000, 30000, 45000];
-    slots.forEach((s, idx) => {
-      s.textContent = `₹${branchSales[idx]}`;
-    });
-    setTimeout(() => {
-      hqBox.textContent = 'Total Corporate Sales (MPI_SUM): ₹2,00,000';
-      summary.innerHTML = '💰 <strong>MPI_Reduce:</strong> HQ summed up all individual branch earnings (₹50k + ₹75k + ₹30k + ₹45k = ₹2,00,000) using <code>MPI_SUM</code>!';
-    }, 800);
-  });
+  renderLab('hello');
 }
 
 /* ==========================================================================
-   8. Day 2 Simulator 3: GPU Grid / Block / Thread Visualizer
+   5. Live Simulator 1: Order Queue Simulation
    ========================================================================== */
-function initDay2GpuSimulator() {
-  const nSelect = document.getElementById('gpuNSelect');
-  const btnLaunch = document.getElementById('btnLaunchGpuKernel');
-  const visual = document.getElementById('gpuGridVisual');
-  const blocksCountEl = document.getElementById('gpuBlocksCount');
-  const summary = document.getElementById('gpuSummary');
-
-  function renderGpuGrid() {
-    const N = parseInt(nSelect.value, 10);
-    const threadsPerBlock = 8;
-    const numBlocks = Math.ceil(N / threadsPerBlock);
-    blocksCountEl.textContent = `${numBlocks} Blocks (${N} Total Threads)`;
-
-    visual.innerHTML = '';
-    for (let b = 0; b < numBlocks; b++) {
-      const blockCard = document.createElement('div');
-      blockCard.className = 'gpu-block-card';
-      blockCard.innerHTML = `<div class="block-title">Block #${b}</div><div class="threads-chips-grid" id="threadsGrid_${b}"></div>`;
-      visual.appendChild(blockCard);
-
-      const chipsGrid = blockCard.querySelector('.threads-chips-grid');
-      for (let t = 0; t < threadsPerBlock; t++) {
-        const globalIdx = b * threadsPerBlock + t;
-        if (globalIdx < N) {
-          const chip = document.createElement('div');
-          chip.className = 't-chip';
-          chip.id = `gpu_t_${globalIdx}`;
-          chip.textContent = `t${globalIdx}`;
-          chip.title = `Global Thread Index: ${globalIdx} (Block ${b}, Thread ${t})`;
-          chipsGrid.appendChild(chip);
-        }
-      }
-    }
-  }
-
-  btnLaunch.addEventListener('click', () => {
-    const chips = visual.querySelectorAll('.t-chip');
-    chips.forEach(c => c.classList.remove('active-gpu'));
-
-    chips.forEach((c, idx) => {
-      setTimeout(() => {
-        c.classList.add('active-gpu');
-      }, Math.min(600, idx * 10));
-    });
-
-    summary.innerHTML = `⚡ <strong>GPU Kernel Executing:</strong> Launched ${chips.length} hardware threads concurrently! Every vector item A[i] + B[i] calculated in parallel.`;
-  });
-
-  nSelect.addEventListener('change', renderGpuGrid);
-  renderGpuGrid();
-}
-
-/* ==========================================================================
-   9. Day 1 Simulators (Queue & Race)
-   ========================================================================== */
-function initDay1QueueSimulator() {
+function initQueueSimulator() {
   const runBtn = document.getElementById('btnRunQueueSim');
   const resetBtn = document.getElementById('btnResetQueueSim');
   const chefsSelect = document.getElementById('queueChefsSelect');
@@ -552,42 +356,51 @@ function initDay1QueueSimulator() {
   const progressBar = document.getElementById('queueTotalProgress');
 
   let simTimer = null;
-  const TOTAL_ORDERS = 24;
+  let isRunning = false;
+  const TOTAL_ORDERS = 40;
 
   function renderLanes() {
     const numChefs = parseInt(chefsSelect.value, 10);
     lanesContainer.innerHTML = '';
+
     for (let c = 0; c < numChefs; c++) {
       const row = document.createElement('div');
       row.className = 'lane-row';
-      row.innerHTML = `<div class="lane-chef">👨🍳 Chef ${c}</div><div class="lane-slots" id="d1_slots_${c}"></div>`;
+      row.innerHTML = `
+        <div class="lane-chef">👨🍳 Chef ${c}</div>
+        <div class="lane-slots" id="laneSlots_${c}"></div>
+      `;
       lanesContainer.appendChild(row);
     }
   }
 
   function resetSim() {
     if (simTimer) clearInterval(simTimer);
+    isRunning = false;
     timeElapsedEl.textContent = '0.0s';
     throughputEl.textContent = '0 orders/s';
     progressBar.style.width = '0%';
     renderLanes();
   }
 
-  runBtn.addEventListener('click', () => {
+  function startSim() {
+    if (isRunning) return;
     resetSim();
+    isRunning = true;
+
     const numChefs = parseInt(chefsSelect.value, 10);
     let ordersDone = 0;
     let seconds = 0.0;
     const ordersPerChef = Math.ceil(TOTAL_ORDERS / numChefs);
 
     for (let c = 0; c < numChefs; c++) {
-      const slotsEl = document.getElementById(`d1_slots_${c}`);
+      const slotsEl = document.getElementById(`laneSlots_${c}`);
       for (let o = 0; o < ordersPerChef; o++) {
         const orderId = c * ordersPerChef + o + 1;
         if (orderId <= TOTAL_ORDERS) {
           const slot = document.createElement('div');
           slot.className = 'slot-item';
-          slot.id = `d1_slot_${orderId}`;
+          slot.id = `slot_${orderId}`;
           slot.textContent = `#${orderId}`;
           slotsEl.appendChild(slot);
         }
@@ -597,28 +410,42 @@ function initDay1QueueSimulator() {
     simTimer = setInterval(() => {
       seconds += 0.2;
       timeElapsedEl.textContent = `${seconds.toFixed(1)}s`;
+
       for (let c = 0; c < numChefs; c++) {
         const orderId = c * ordersPerChef + Math.floor(seconds / 0.4);
         if (orderId <= TOTAL_ORDERS) {
-          const slot = document.getElementById(`d1_slot_${orderId}`);
+          const slot = document.getElementById(`slot_${orderId}`);
           if (slot && !slot.classList.contains('done')) {
-            slot.classList.add('done');
+            slot.className = 'slot-item done';
             ordersDone++;
           }
         }
       }
-      progressBar.style.width = `${Math.min(100, (ordersDone / TOTAL_ORDERS) * 100)}%`;
-      throughputEl.textContent = `${(ordersDone / Math.max(0.1, seconds)).toFixed(1)} orders/s`;
-      if (ordersDone >= TOTAL_ORDERS) clearInterval(simTimer);
-    }, 200);
-  });
 
+      const progress = Math.min(100, (ordersDone / TOTAL_ORDERS) * 100);
+      progressBar.style.width = `${progress}%`;
+      const tp = seconds > 0 ? (ordersDone / seconds).toFixed(1) : 0;
+      throughputEl.textContent = `${tp} orders/s`;
+
+      if (ordersDone >= TOTAL_ORDERS || seconds >= 12.0) {
+        clearInterval(simTimer);
+        isRunning = false;
+        progressBar.style.width = '100%';
+      }
+    }, 200);
+  }
+
+  runBtn.addEventListener('click', startSim);
   resetBtn.addEventListener('click', resetSim);
   chefsSelect.addEventListener('change', resetSim);
+
   renderLanes();
 }
 
-function initDay1RaceSimulator() {
+/* ==========================================================================
+   6. Live Simulator 2: Shared Cash Register Race Condition
+   ========================================================================== */
+function initRaceSimulator() {
   const btnBuggy = document.getElementById('btnSimulateBuggyCash');
   const btnSafe = document.getElementById('btnSimulateSafeReduction');
   const display = document.getElementById('registerDisplay');
@@ -629,78 +456,159 @@ function initDay1RaceSimulator() {
 
   btnBuggy.addEventListener('click', () => {
     display.textContent = '₹100';
-    status.textContent = 'UNSYNCHRONIZED WRITE RACE';
+    status.textContent = 'SIMULTANEOUS UNSYNCHRONIZED ACCESS';
     status.style.color = '#f43f5e';
-    chef1Action.textContent = 'Reads ₹100, computes ₹150...';
-    chef2Action.textContent = 'Reads ₹100, computes ₹130...';
+
+    chef1Action.textContent = '1. Reads current value: ₹100';
+    chef2Action.textContent = '1. Reads current value: ₹100';
+    raceLog.textContent = 'Both threads read ₹100 into local registers at the exact same clock cycle!';
+
     setTimeout(() => {
-      display.textContent = '₹130 (CORRUPTED)';
+      chef1Action.textContent = '2. Computes ₹100 + ₹50 = ₹150, writes ₹150';
+      display.textContent = '₹150';
+      raceLog.textContent = 'Chef 1 writes ₹150 to memory. But Chef 2 still has stale ₹100 in CPU register...';
+    }, 1200);
+
+    setTimeout(() => {
+      chef2Action.textContent = '2. Computes ₹100 + ₹30 = ₹130, writes ₹130';
+      display.textContent = '₹130 (CORRUPTED!)';
       display.style.color = '#f43f5e';
-      raceLog.innerHTML = '❌ <strong>DATA RACE:</strong> Chef 2 overwrote ₹150 with ₹130. ₹50 was lost! Expected: ₹180.';
-    }, 1500);
+      raceLog.innerHTML = '❌ <strong>DATA RACE DISASTER:</strong> Chef 2 blindly overwrote ₹150 with ₹130. ₹50 was permanently lost! Expected: ₹180.';
+    }, 2500);
   });
 
   btnSafe.addEventListener('click', () => {
     display.textContent = '₹100';
     display.style.color = '#38bdf8';
-    status.textContent = 'REDUCTION (LOCAL SLICES)';
+    status.textContent = 'REDUCTION (LOCAL ACCUMULATION)';
     status.style.color = '#10b981';
-    chef1Action.textContent = 'Local slice = +₹50';
-    chef2Action.textContent = 'Local slice = +₹30';
+
+    chef1Action.textContent = '1. Private local accumulator = ₹50';
+    chef2Action.textContent = '1. Private local accumulator = ₹30';
+    raceLog.textContent = 'Each thread works on its own isolated private stack memory without touching the shared register.';
+
+    setTimeout(() => {
+      chef1Action.textContent = '2. Finished local slice (+₹50)';
+      chef2Action.textContent = '2. Finished local slice (+₹30)';
+      display.textContent = '₹100 + (₹50 + ₹30)';
+      raceLog.textContent = 'OpenMP reduction combines private results via tree reduction: 100 + 50 + 30...';
+    }, 1200);
+
     setTimeout(() => {
       display.textContent = '₹180 (PERFECT)';
       display.style.color = '#10b981';
-      raceLog.innerHTML = '✅ <strong>SAFE REDUCTION:</strong> Lock-free parallel accumulation achieved exact ₹180!';
-    }, 1500);
+      raceLog.innerHTML = '✅ <strong>SAFE REDUCTION SUCCESS:</strong> Zero lock contention, full CPU throughput, exact correct sum of ₹180 achieved!';
+    }, 2400);
   });
 }
 
 /* ==========================================================================
-   10. Mastery Checklist
+   7. Live Simulator 3: Scheduling Simulator
    ========================================================================== */
-const CHECKLIST_DAY1 = [
-  { id: 'd1_1', title: '1. Parallel Computing Basics', desc: 'Dividing computational work across multiple physical cores.' },
-  { id: 'd1_2', title: '2. Process vs Thread', desc: 'Process = independent memory; Thread = lightweight worker sharing memory.' },
-  { id: 'd1_3', title: '3. SIMD vs MIMD', desc: 'SIMD = all chop tomatoes; MIMD = different dishes per chef.' },
-  { id: 'd1_4', title: '4. Speedup & Amdahl\'s Law', desc: 'Speedup = Ts/Tp; Max speedup is bounded by serial bottleneck (1/S).' },
-  { id: 'd1_5', title: '5. OpenMP parallel for & Scopes', desc: 'Splitting loop iterations and handling shared vs private variables.' },
-  { id: 'd1_6', title: '6. Race Conditions & Reduction', desc: 'Preventing memory corruption using reduction(+:sum).' }
+function initSchedulingSimulator() {
+  const btnStatic = document.getElementById('btnScheduleStatic');
+  const btnDynamic = document.getElementById('btnScheduleDynamic');
+  const container = document.getElementById('scheduleLanesWrapper');
+  const summary = document.getElementById('scheduleSummary');
+
+  function renderStatic() {
+    container.innerHTML = `
+      <div class="lane-row">
+        <div class="lane-chef">👨🍳 Chef 0</div>
+        <div class="lane-slots">
+          <span class="sched-item biryani">🍲 Biryani 1 (4s)</span>
+          <span class="sched-item biryani">🍲 Biryani 2 (4s)</span>
+          <span class="sched-item biryani">🍲 Biryani 3 (4s)</span>
+          <span class="sched-item biryani">🍲 Biryani 4 (4s)</span>
+          <small style="color:#f43f5e; font-weight:700;">(Total: 16s Overloaded!)</small>
+        </div>
+      </div>
+      <div class="lane-row">
+        <div class="lane-chef">👨🍳 Chef 1</div>
+        <div class="lane-slots">
+          <span class="sched-item tea">☕ Tea 1 (1s)</span>
+          <span class="sched-item tea">☕ Tea 2 (1s)</span>
+          <span class="sched-item tea">☕ Tea 3 (1s)</span>
+          <span class="sched-item tea">☕ Tea 4 (1s)</span>
+          <small style="color:#38bdf8; font-weight:700;">(Finished in 4s -> IDLE for 12s!)</small>
+        </div>
+      </div>
+    `;
+    summary.innerHTML = `
+      ⚠️ <strong>Static Scheduling Issue:</strong> Chunks are assigned ahead of time. Chef 1 finishes fast teas in 4 seconds and sits idle, while Chef 0 sweats for 16 seconds. <em>Total time = 16 seconds (Poor Load Balance).</em>
+    `;
+  }
+
+  function renderDynamic() {
+    container.innerHTML = `
+      <div class="lane-row">
+        <div class="lane-chef">👨🍳 Chef 0</div>
+        <div class="lane-slots">
+          <span class="sched-item biryani">🍲 Biryani 1 (4s)</span>
+          <span class="sched-item biryani">🍲 Biryani 2 (4s)</span>
+          <span class="sched-item tea">☕ Tea 3 (1s)</span>
+          <span class="sched-item tea">☕ Tea 4 (1s)</span>
+          <small style="color:#10b981; font-weight:700;">(Total: 10s)</small>
+        </div>
+      </div>
+      <div class="lane-row">
+        <div class="lane-chef">👨🍳 Chef 1</div>
+        <div class="lane-slots">
+          <span class="sched-item biryani">🍲 Biryani 3 (4s)</span>
+          <span class="sched-item biryani">🍲 Biryani 4 (4s)</span>
+          <span class="sched-item tea">☕ Tea 1 (1s)</span>
+          <span class="sched-item tea">☕ Tea 2 (1s)</span>
+          <small style="color:#10b981; font-weight:700;">(Total: 10s)</small>
+        </div>
+      </div>
+    `;
+    summary.innerHTML = `
+      ✅ <strong>Dynamic Scheduling Balance:</strong> Whenever a chef finishes an item, they pull the next available order from the shared work pool. Both chefs finish in ~10 seconds! <em>Perfect for unpredictable loop workloads.</em>
+    `;
+  }
+
+  btnStatic.addEventListener('click', renderStatic);
+  btnDynamic.addEventListener('click', renderDynamic);
+  renderStatic();
+}
+
+/* ==========================================================================
+   8. 10 Golden Must-Understand Concepts Checklist
+   ========================================================================== */
+const MUST_KNOW_CONCEPTS = [
+  { id: 1, title: '1. What is Parallel Computing?', desc: 'Dividing a computational problem into concurrent sub-tasks executed across multiple processing cores simultaneously.' },
+  { id: 2, title: '2. Sequential vs Parallel Execution', desc: '1 Chef cooking 100 orders one-by-one vs 4 Chefs cooking 25 orders each concurrently in the kitchen.' },
+  { id: 3, title: '3. Process vs Thread', desc: 'A Process has its own independent address space. A Thread is a lightweight worker sharing memory with sibling threads (OpenMP).' },
+  { id: 4, title: '4. CPU Core', desc: 'A distinct physical silicon execution unit with registers and ALU capable of running an independent thread instruction stream.' },
+  { id: 5, title: '5. SIMD vs MIMD', desc: 'SIMD: All chefs chop one tomato together (Vector/GPU). MIMD: Each chef prepares a completely different recipe (Multicore CPU).' },
+  { id: 6, title: '6. Shared vs Distributed Memory', desc: 'Shared: 1 kitchen, 1 central refrigerator (OpenMP). Distributed: Separate restaurant branches communicating by message delivery (MPI).' },
+  { id: 7, title: '7. Speedup (S = Ts / Tp)', desc: 'The ratio of single-thread sequential runtime over parallel multi-threaded runtime. 100s / 25s = 4.0×.' },
+  { id: 8, title: '8. Parallel Efficiency (E = S / N)', desc: 'Percentage of hardware capacity utilized. E.g. Speedup 3.2 on 4 cores = 80% efficiency.' },
+  { id: 9, title: '9. Amdahl’s Law & The Cashier Bottleneck', desc: 'Maximum theoretical speedup is strictly capped by the serial fraction S: Max Speedup = 1 / S.' },
+  { id: 10, title: '10. OpenMP Core Directives', desc: 'Proficiency with #pragma omp parallel, parallel for, reduction(+:sum), critical, collapse(2), and schedule().' }
 ];
 
-const CHECKLIST_DAY2 = [
-  { id: 'd2_1', title: '1. Distributed Memory Architecture', desc: 'Each computer/branch has isolated private RAM and must communicate via network messages.' },
-  { id: 'd2_2', title: '2. MPI Communicator & Ranks', desc: 'MPI_COMM_WORLD connects all branches; Rank (0 to size-1) identifies each branch process.' },
-  { id: 'd2_3', title: '3. Point-to-Point Messaging (Send/Recv)', desc: 'Explicit message envelopes with buffer, count, datatype, destination, tag, and comm.' },
-  { id: 'd2_4', title: '4. Deadlock Recognition & Prevention', desc: 'Preventing mutual blocking waits by ensuring matching send/recv orders or non-blocking calls.' },
-  { id: 'd2_5', title: '5. Collective Operations (Bcast & Scatter)', desc: 'Broadcasting announcements and scattering arrays across the cluster.' },
-  { id: 'd2_6', title: '6. Global Reductions (MPI_Reduce)', desc: 'Aggregating distributed datasets into global totals using MPI_SUM, MPI_MAX, and MPI_MIN.' },
-  { id: 'd2_7', title: '7. Parallel Numerical Integration (Trapezoidal Rule)', desc: 'Dividing mathematical integration intervals and computing PI with high-resolution MPI_Wtime.' },
-  { id: 'd2_8', title: '8. GPU Programming & CUDA Concepts', desc: 'From 4 master chefs to 10,000 line workers. Host/Device memory, CUDA grids, blocks, and threads.' },
-  { id: 'd2_9', title: '9. Modern Hybrid Computing (MPI + OpenMP + GPU)', desc: 'Multi-node network scaling (MPI) + Multi-core CPU threading (OpenMP) + GPU matrix acceleration.' }
-];
-
-function renderChecklist() {
+function initChecklist() {
   const grid = document.getElementById('checklistGrid');
   const scoreBadge = document.getElementById('readinessScore');
   const fill = document.getElementById('readinessFill');
-  const data = CURRENT_DAY === 'day1' ? CHECKLIST_DAY1 : CHECKLIST_DAY2;
-  const storageKey = `pc_check_${CURRENT_DAY}`;
 
-  let completedSet = new Set(JSON.parse(localStorage.getItem(storageKey) || '[]'));
+  let completedSet = new Set(JSON.parse(localStorage.getItem('pc101_checklist') || '[]'));
 
   function updateScore() {
     const count = completedSet.size;
-    const pct = (count / data.length) * 100;
-    scoreBadge.textContent = `${count} / ${data.length} Completed`;
+    const pct = (count / MUST_KNOW_CONCEPTS.length) * 100;
+    scoreBadge.textContent = `${count} / ${MUST_KNOW_CONCEPTS.length} Completed`;
     fill.style.width = `${pct}%`;
-    localStorage.setItem(storageKey, JSON.stringify(Array.from(completedSet)));
+    localStorage.setItem('pc101_checklist', JSON.stringify(Array.from(completedSet)));
   }
 
-  grid.innerHTML = '';
-  data.forEach(item => {
-    const isDone = completedSet.has(item.id);
+  MUST_KNOW_CONCEPTS.forEach(item => {
     const card = document.createElement('div');
+    const isDone = completedSet.has(item.id);
     card.className = `check-item ${isDone ? 'completed' : ''}`;
+    card.id = `check_card_${item.id}`;
+
     card.innerHTML = `
       <div class="check-box-custom">${isDone ? '✓' : ''}</div>
       <div class="check-content">
@@ -726,8 +634,4 @@ function renderChecklist() {
   });
 
   updateScore();
-}
-
-function initChecklist() {
-  renderChecklist();
 }
