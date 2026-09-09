@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 2: Distributed Memory, MPI, GPU & Hybrid Computing — From One Kitchen to Multiple Branches</title>
+  <meta name="description" content="Day 2 Parallel Computing Workshop: Master Distributed Memory, MPI, GPU CUDA programming, and Hybrid systems through the continuous restaurant franchise analogy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="day2.css">
+</head>
+<body class="theme-dark">
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <div class="brand">
+        <span class="brand-icon">🌐</span>
+        <div class="brand-text">
+          <span class="brand-title">Parallel Computing 102</span>
+          <span class="brand-badge">Day 2 • MPI & GPU</span>
+        </div>
+      </div>
+
+      <!-- Workshop Day Switcher Links -->
+      <div class="day-nav-pills">
+        <a href="index.html" class="day-link-btn">
+          <span>🍳 Day 1: OpenMP</span>
+        </a>
+        <a href="day2.html" class="day-link-btn active">
+          <span>🏢 Day 2: MPI & GPU</span>
+        </a>
+      </div>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#agenda">Agenda</a>
+        <a href="#rosetta">Franchise Metaphor</a>
+        <a href="#architectures">Distributed & GPU</a>
+        <a href="#simulators">Live Simulators</a>
+        <a href="#codelab">MPI Code Lab</a>
+        <a href="#milestones">10 Must-Knows</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">
+          <span class="toggle-icon">☀️</span>
+        </button>
+        <a href="#codelab" class="btn btn-primary btn-sm">Jump to Code Lab</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="container hero-content">
+      <div class="hero-pill">
+        <span class="pill-dot"></span>
+        <span>Day 2 Hands-On Masterclass • Distributed Memory, MPI, GPU & Hybrid HPC</span>
+      </div>
+      <h1 class="hero-title">
+        From <span class="gradient-text-accent">One Kitchen</span> to <br class="br-desktop">
+        <span class="gradient-text-primary">Multiple Restaurant Branches</span>
+      </h1>
+      <p class="hero-subtitle">
+        Yesterday we orchestrated multiple chefs around one shared refrigerator. Today our restaurant expands into <strong>4 regional branches</strong> (Chennai, Bangalore, Hosur, Coimbatore) exchanging <strong>MPI messages</strong> and powered by <strong>thousands of GPU workers</strong>.
+      </p>
+
+      <!-- Quick Metrics Bar -->
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-num">8 hrs</div>
+          <div class="stat-label">Duration & 8 Sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">4 Branches</div>
+          <div class="stat-label">Distributed MPI Processes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3 Simulators</div>
+          <div class="stat-label">P2P, Collectives & GPU Grid</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">10 Examples</div>
+          <div class="stat-label">Compilable C/MPI/CUDA Code</div>
+        </div>
+      </div>
+
+      <div class="hero-cta-group">
+        <a href="#simulators" class="btn btn-primary btn-lg">
+          <span>🚀 Launch MPI & GPU Simulators</span>
+        </a>
+        <a href="#agenda" class="btn btn-secondary btn-lg">
+          <span>📅 View 8-Hour Schedule</span>
+        </a>
+        <a href="DAY_2_TRAINER_HANDBOOK.md" target="_blank" class="btn btn-accent btn-lg">
+          <span>📖 Open Trainer Handbook</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Section 0: Day 2 Schedule -->
+    <section id="agenda" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">🕘 8-Hour Master Schedule</div>
+        <h2 class="section-title">Day 2 at a Glance</h2>
+        <p class="section-desc">From process initialization and point-to-point tomato dispatch in the morning to numerical integration, parallel sorting, CUDA kernels, and hybrid computing.</p>
+      </div>
+
+      <div class="timeline-grid">
+        <!-- Session 1 -->
+        <div class="timeline-card">
+          <div class="time-badge">09:00 – 09:30 AM</div>
+          <div class="session-header-row"><span class="session-num">Session 1</span><span class="session-tag theory">Recap & Intro</span></div>
+          <h3>Day 1 Recap & Introduction to MPI</h3>
+          <p>Moving from 1 kitchen to 4 regional branches. Processes vs. Threads, independent address spaces, and message passing.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Distributed memory, message passing, OpenMP vs MPI comparison table</div>
+        </div>
+
+        <!-- Session 2 -->
+        <div class="timeline-card">
+          <div class="time-badge">09:30 – 10:30 AM</div>
+          <div class="session-header-row"><span class="session-num">Session 2</span><span class="session-tag code">MPI Basics</span></div>
+          <h3>MPI Fundamentals & First Program</h3>
+          <p>The core lifecycle: <code>MPI_Init</code>, <code>MPI_Finalize</code>, ranks, communicators, and Windows/VS Code setup.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> <code>MPI_COMM_WORLD</code>, <code>MPI_Comm_rank</code>, <code>mpiexec -n 4</code></div>
+        </div>
+
+        <!-- Break 1 -->
+        <div class="timeline-card break-card">
+          <div class="time-badge">10:30 – 10:45 AM</div>
+          <div class="break-icon">☕</div>
+          <h3>Morning Tea Break</h3>
+          <p>Verify MS-MPI environment and grab a beverage!</p>
+        </div>
+
+        <!-- Session 3 -->
+        <div class="timeline-card">
+          <div class="time-badge">10:45 – 11:45 AM</div>
+          <div class="session-header-row"><span class="session-num">Session 3</span><span class="session-tag code">P2P Comm</span></div>
+          <h3>Point-to-Point Communication</h3>
+          <p>Sending 42 kg of tomatoes from Chennai to Bangalore. Envelopes, datatypes, tags, and deadlock prevention.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> <code>MPI_Send</code>, <code>MPI_Recv</code>, blocking semantics, deadlocks</div>
+        </div>
+
+        <!-- Session 4 -->
+        <div class="timeline-card">
+          <div class="time-badge">11:45 – 12:45 PM</div>
+          <div class="session-header-row"><span class="session-num">Session 4</span><span class="session-tag code">Collectives</span></div>
+          <h3>Collective Communication</h3>
+          <p>Headquarters broadcasts promo code #9021, scatters dough batches, and reduces nationwide corporate sales.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> <code>MPI_Bcast</code>, <code>MPI_Scatter</code>, <code>MPI_Gather</code>, <code>MPI_Reduce</code>, <code>MPI_Barrier</code></div>
+        </div>
+
+        <!-- Lunch -->
+        <div class="timeline-card break-card lunch-card">
+          <div class="time-badge">12:45 – 13:45 PM</div>
+          <div class="break-icon">🍱</div>
+          <h3>Lunch Break</h3>
+          <p>Recharge before afternoon numerical algorithms and GPU labs!</p>
+        </div>
+
+        <!-- Session 5 -->
+        <div class="timeline-card">
+          <div class="time-badge">13:45 – 14:45 PM</div>
+          <div class="session-header-row"><span class="session-num">Session 5</span><span class="session-tag math">Algorithms</span></div>
+          <h3>Trapezoidal Rule, MPI I/O & Timing</h3>
+          <p>Calculating the area under the curve in parallel to compute \(\pi\). High-resolution timing with <code>MPI_Wtime()</code>.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Numerical integration, <code>MPI_Wtime()</code>, Parallel I/O bottlenecks</div>
+        </div>
+
+        <!-- Session 6 -->
+        <div class="timeline-card">
+          <div class="time-badge">14:45 – 15:30 PM</div>
+          <div class="session-header-row"><span class="session-num">Session 6</span><span class="session-tag code">Sorting</span></div>
+          <h3>Parallel Sorting & Performance</h3>
+          <p>Sorting 1,000 order tickets across branches. Measuring speedup, efficiency, and communication overhead.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Scatter $\to$ Local Sort $\to$ Gather $\to$ Merge, Speedup $S = T_1/T_p$</div>
+        </div>
+
+        <!-- Break 2 -->
+        <div class="timeline-card break-card">
+          <div class="time-badge">15:30 – 15:45 PM</div>
+          <div class="break-icon">☕</div>
+          <h3>Afternoon Refreshment</h3>
+          <p>Quick stretch before entering the GPU & Hybrid domain.</p>
+        </div>
+
+        <!-- Session 7 -->
+        <div class="timeline-card">
+          <div class="time-badge">15:45 – 16:30 PM</div>
+          <div class="session-header-row"><span class="session-num">Session 7</span><span class="session-tag capstone">GPU CUDA</span></div>
+          <h3>GPU Programming Fundamentals</h3>
+          <p>From 4 master chefs to 10,000 specialized line workers. Host vs Device, CUDA Grids, Blocks, Threads & Vector Add.</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> <code>cudaMalloc</code>, <code>cudaMemcpy</code>, <code>__global__</code> kernels, thread indexing</div>
+        </div>
+
+        <!-- Session 8 -->
+        <div class="timeline-card">
+          <div class="time-badge">16:30 – 17:00 PM</div>
+          <div class="session-header-row"><span class="session-num">Session 8</span><span class="session-tag capstone">Capstone</span></div>
+          <h3>Hybrid Systems & Capstone Challenge</h3>
+          <p>MPI + OpenMP + GPU architecture. Final hands-on project: "Distributed Restaurant Sales Analyzer".</p>
+          <div class="session-focus">💡 <strong>Focus:</strong> Multi-node Hybrid HPC, full 2-day synthesis & recap</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: The Franchise Rosetta Stone -->
+    <section id="rosetta" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">🏢 Day 2 Metaphor</div>
+        <h2 class="section-title">The Franchise Rosetta Stone</h2>
+        <p class="section-desc">Every distributed computing and GPU concept maps directly to a nationwide restaurant franchise network.</p>
+      </div>
+
+      <div class="rosetta-grid" id="rosettaGrid">
+        <!-- Injected dynamically via day2.js -->
+      </div>
+
+      <!-- Comparison Box: 1 Motherboard vs Distributed Cluster -->
+      <div class="comparison-box">
+        <div class="comp-col">
+          <div class="comp-header">
+            <span class="comp-badge bad">Shared Memory Limits (Day 1)</span>
+            <h3>1 Kitchen Motherboard (~64 Cores Max)</h3>
+          </div>
+          <p>A single motherboard cannot scale indefinitely because the shared memory bus saturates with memory traffic.</p>
+        </div>
+
+        <div class="comp-col highlight-col">
+          <div class="comp-header">
+            <span class="comp-badge good">Distributed Memory (Day 2 - MPI)</span>
+            <h3>Multiple Regional Branches (Millions of Cores)</h3>
+          </div>
+          <p>Connect thousands of independent computers over high-speed networks. The foundation of modern supercomputing!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Architectures & Memory Models -->
+    <section id="architectures" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">🔬 Silicon & Hardware</div>
+        <h2 class="section-title">Distributed Systems, GPU Grids & Hybrid HPC</h2>
+        <p class="section-desc">How physical hardware scales from multi-core CPUs to distributed clusters and massively parallel GPU accelerators.</p>
+      </div>
+
+      <div class="tab-container" id="archTabs">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="tab-memory">Shared vs Distributed Memory</button>
+          <button class="tab-btn" data-tab="tab-flynn">Flynn's Taxonomy & SIMT</button>
+          <button class="tab-btn" data-tab="tab-gpu">GPU Architecture (Host vs Device)</button>
+          <button class="tab-btn" data-tab="tab-hybrid">Hybrid HPC Hierarchy</button>
+        </div>
+
+        <!-- Tab 1: Shared vs Distributed Memory -->
+        <div class="tab-content active" id="tab-memory">
+          <div class="two-col-grid">
+            <div class="memory-card shared">
+              <div class="memory-header">
+                <span class="memory-icon">🧊</span>
+                <h3>Shared Memory (OpenMP)</h3>
+                <span class="tech-tag">Day 1 Focus</span>
+              </div>
+              <div class="memory-diagram">
+                <div class="mem-block">Shared RAM (Central Refrigerator)</div>
+                <div class="mem-arrows">↓↓↓↓</div>
+                <div class="cores-row">
+                  <div class="core-box">Core 0 (Chef 0)</div>
+                  <div class="core-box">Core 1 (Chef 1)</div>
+                  <div class="core-box">Core 2 (Chef 2)</div>
+                  <div class="core-box">Core 3 (Chef 3)</div>
+                </div>
+              </div>
+              <p>All threads directly read and write the same address space. Fast pointer operations, but vulnerable to race conditions.</p>
+            </div>
+
+            <div class="memory-card distributed">
+              <div class="memory-header">
+                <span class="memory-icon">🌐</span>
+                <h3>Distributed Memory (MPI)</h3>
+                <span class="tech-tag">Day 2 Focus</span>
+              </div>
+              <div class="memory-diagram">
+                <div class="dist-nodes">
+                  <div class="node-box">
+                    <span>Branch 0 (Chennai)</span>
+                    <small>RAM 0 (Fridge 0)</small>
+                  </div>
+                  <div class="network-bus">⇄ MPI Network Messages ⇄</div>
+                  <div class="node-box">
+                    <span>Branch 1 (Bangalore)</span>
+                    <small>RAM 1 (Fridge 1)</small>
+                  </div>
+                </div>
+              </div>
+              <p>Each branch has its own private RAM. Chennai cannot touch Bangalore's fridge; they must exchange explicit network messages (<code>MPI_Send</code> / <code>MPI_Recv</code>).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Flynn's Taxonomy -->
+        <div class="tab-content" id="tab-flynn">
+          <div class="two-col-grid">
+            <div class="content-box">
+              <div class="concept-badge">SIMD / SIMT</div>
+              <h3>Single Instruction, Multiple Data</h3>
+              <div class="kitchen-quote">
+                💬 <strong>Analogy:</strong> Head Chef barks: <em>"Everyone CHOP ONE TOMATO simultaneously!"</em>
+              </div>
+              <ul class="feature-list">
+                <li><strong>One instruction stream:</strong> <code>CHOP</code></li>
+                <li><strong>Different data points:</strong> Worker 1 has Tomato 1, Worker 2 has Tomato 2...</li>
+                <li><strong>Silicon:</strong> AVX-512 vector units and GPU Warps (SIMT: Single Instruction, Multiple Threads).</li>
+              </ul>
+            </div>
+
+            <div class="content-box">
+              <div class="concept-badge">MIMD</div>
+              <h3>Multiple Instruction, Multiple Data</h3>
+              <div class="kitchen-quote">
+                💬 <strong>Analogy:</strong> Four chefs prepare completely different dishes:
+              </div>
+              <ul class="feature-list">
+                <li>👨🍳 Chef 0: <em>Boils rice</em></li>
+                <li>👨🍳 Chef 1: <em>Fries chicken</em></li>
+                <li>👨🍳 Chef 2: <em>Prepares salad</em></li>
+                <li>👨🍳 Chef 3: <em>Bakes naan bread</em></li>
+                <li><strong>Silicon:</strong> Multi-core CPUs and MPI clusters executing independent processes.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: GPU Architecture -->
+        <div class="tab-content" id="tab-gpu">
+          <div class="two-col-grid">
+            <div class="content-box">
+              <div class="concept-badge">CPU (Host)</div>
+              <h3>The Master Head Chef</h3>
+              <p>A few (4–64) powerful cores optimized for sequential speed, branch prediction, and complex decision-making.</p>
+              <div class="kitchen-quote">
+                💬 <strong>Role:</strong> Manages overall business, orders ingredients, and coordinates workflow.
+              </div>
+            </div>
+
+            <div class="content-box">
+              <div class="concept-badge" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">GPU (Device)</div>
+              <h3>The Mass Assembly Factory</h3>
+              <p>Thousands (1,000–10,000+) of lightweight cores designed for massive data-parallel mathematical throughput.</p>
+              <div class="kitchen-quote">
+                💬 <strong>Role:</strong> 10,000 workers peeling potatoes or chopping onions at blisteringly fast speed.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Hybrid HPC -->
+        <div class="tab-content" id="tab-hybrid">
+          <div class="cache-explainer">
+            <h3>The Modern Supercomputer Pyramid: MPI + OpenMP + CUDA</h3>
+            <p>World-class HPC clusters don't choose between paradigms; they combine all three into a single cohesive hierarchy.</p>
+            <div class="cache-pyramid">
+              <div class="pyramid-level l1"><span>MPI: Distributed Processes Across Cluster Nodes (Network Scale)</span></div>
+              <div class="pyramid-level l2"><span>OpenMP: Multi-threading Across CPU Sockets & Cores (Node Scale)</span></div>
+              <div class="pyramid-level l3"><span>CUDA GPU: Massive Parallel Kernels on Accelerators (Core Scale)</span></div>
+              <div class="pyramid-level ram"><span>SIMD / Vectorization: 512-bit Registers within GPU/CPU Cores</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Live Interactive Simulators -->
+    <section id="simulators" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">🎮 Live Simulators</div>
+        <h2 class="section-title">Interactive MPI & GPU Simulators</h2>
+        <p class="section-desc">Experience distributed message dispatching, collective broadcasts, and GPU thread grids directly in your browser.</p>
+      </div>
+
+      <!-- Simulator 1: MPI Point-to-Point Tomato Dispatch & Deadlock Demo -->
+      <div class="sim-card">
+        <div class="sim-header">
+          <div class="sim-title-group">
+            <span class="sim-badge">MPI Simulator 1</span>
+            <h3>Point-to-Point Communication: Tomato Dispatch & Deadlock Demo</h3>
+          </div>
+          <div class="sim-controls-inline">
+            <button class="btn btn-success btn-sm" id="btnRunTomatoSend">🍅 Send 42kg Tomatoes (Safe)</button>
+            <button class="btn btn-danger btn-sm" id="btnRunDeadlockDemo">💥 Trigger Deadlock (Mutual Wait)</button>
+            <button class="btn btn-secondary btn-sm" id="btnResetMpiP2P">↺ Reset</button>
+          </div>
+        </div>
+
+        <div class="sim-body">
+          <div class="p2p-branches-visual">
+            <div class="branch-node" id="nodeChennai">
+              <div class="b-title">🏢 Branch 0 (Chennai - HQ)</div>
+              <div class="b-status" id="chennaiStatus">IDLE</div>
+              <div class="b-inventory" id="chennaiInventory">Inventory: 100 kg Tomatoes</div>
+            </div>
+
+            <div class="highway-track">
+              <div class="courier-van" id="courierVan">🚚 <span>[Empty]</span></div>
+            </div>
+
+            <div class="branch-node" id="nodeBangalore">
+              <div class="b-title">🏢 Branch 1 (Bangalore)</div>
+              <div class="b-status" id="bangaloreStatus">IDLE</div>
+              <div class="b-inventory" id="bangaloreInventory">Inventory: 0 kg Tomatoes (LOW!)</div>
+            </div>
+          </div>
+
+          <div class="race-log-box" id="mpiP2PLog">
+            Click "Send 42kg Tomatoes" to observe MPI_Send and MPI_Recv envelope delivery between branches.
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulator 2: Collective Communication Visualizer -->
+      <div class="sim-card">
+        <div class="sim-header">
+          <div class="sim-title-group">
+            <span class="sim-badge info">MPI Simulator 2</span>
+            <h3>Collective Communication: Bcast, Scatter, Gather & Reduce</h3>
+          </div>
+          <div class="sim-controls-inline">
+            <button class="btn btn-primary btn-sm" id="btnSimBcast">📢 MPI_Bcast</button>
+            <button class="btn btn-accent btn-sm" id="btnSimScatter">🥖 MPI_Scatter</button>
+            <button class="btn btn-secondary btn-sm" id="btnSimGather">🧺 MPI_Gather</button>
+            <button class="btn btn-success btn-sm" id="btnSimReduce">💰 MPI_Reduce (SUM)</button>
+          </div>
+        </div>
+
+        <div class="sim-body">
+          <div class="collective-stage" id="collectiveStage">
+            <div class="hq-station">
+              <div class="station-label">HQ (Rank 0 - Chennai)</div>
+              <div class="station-data-box" id="hqDataBox">Recipe: #9021 | Dough: [10, 20, 30, 40]</div>
+            </div>
+
+            <div class="branches-row-stage">
+              <div class="branch-station" id="bStation0">
+                <span>Branch 0 (Chennai)</span>
+                <div class="branch-slot" id="slotB0">-</div>
+              </div>
+              <div class="branch-station" id="bStation1">
+                <span>Branch 1 (Bangalore)</span>
+                <div class="branch-slot" id="slotB1">-</div>
+              </div>
+              <div class="branch-station" id="bStation2">
+                <span>Branch 2 (Hosur)</span>
+                <div class="branch-slot" id="slotB2">-</div>
+              </div>
+              <div class="branch-station" id="bStation3">
+                <span>Branch 3 (Coimbatore)</span>
+                <div class="branch-slot" id="slotB3">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="schedule-summary" id="collectiveSummary">
+            Select an MPI Collective operation above to visualize how data flows across the franchise cluster!
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulator 3: GPU Grid / Block / Thread Visualizer -->
+      <div class="sim-card">
+        <div class="sim-header">
+          <div class="sim-title-group">
+            <span class="sim-badge capstone">GPU Simulator 3</span>
+            <h3>CUDA GPU Hierarchy: Grid $\to$ Blocks $\to$ Threads</h3>
+          </div>
+          <div class="sim-controls-inline">
+            <button class="btn btn-primary btn-sm" id="btnLaunchGpuKernel">⚡ Launch GPU Kernel</button>
+          </div>
+        </div>
+
+        <div class="sim-body">
+          <div class="gpu-controls-row">
+            <label>Total Array Elements (N):
+              <select id="gpuNSelect" class="sim-select">
+                <option value="16">16 Items (Mini)</option>
+                <option value="64" selected>64 Items (Standard)</option>
+                <option value="256">256 Items (Large)</option>
+              </select>
+            </label>
+            <label>Threads Per Block:
+              <span class="order-count-badge">8 Threads / Block</span>
+            </label>
+            <div class="sim-metric">
+              <span>Required Blocks: <strong id="gpuBlocksCount">8 Blocks</strong></span>
+            </div>
+          </div>
+
+          <div class="gpu-grid-visual" id="gpuGridVisual">
+            <!-- Injected via JS -->
+          </div>
+          <div class="schedule-summary" id="gpuSummary">
+            Formula: <code>global_idx = blockIdx.x * blockDim.x + threadIdx.x</code>. Every single element is computed in parallel!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Hands-on Code Lab -->
+    <section id="codelab" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">💻 Hands-on Code Lab</div>
+        <h2 class="section-title">MPI & CUDA Code Laboratory (10 Programs)</h2>
+        <p class="section-desc">Select any Day 2 exercise below to view commented source code, compilation commands, and line-by-line pedagogical annotations.</p>
+      </div>
+
+      <div class="code-lab-wrapper">
+        <div class="lab-nav" id="codeLabNav">
+          <!-- Injected dynamically via day2.js -->
+        </div>
+
+        <div class="code-display-pane">
+          <div class="code-header-bar">
+            <div class="file-info">
+              <span class="file-icon">📄</span>
+              <span class="file-name" id="currentFileName">01_mpi_hello.c</span>
+            </div>
+            <div class="code-actions">
+              <button class="btn-copy" id="copyCodeBtn" title="Copy Code">
+                <span>📋 Copy Source</span>
+              </button>
+            </div>
+          </div>
+
+          <pre class="code-block"><code id="codeContent" class="language-c"></code></pre>
+
+          <div class="code-explanation-card">
+            <div class="exp-title">
+              <span class="exp-icon">💡</span>
+              <span id="expHeading">How it works & Core Directives</span>
+            </div>
+            <div class="exp-body" id="expBody"></div>
+            <div class="compilation-bar">
+              <div class="compile-cmd">
+                <span class="cmd-label">Compile:</span>
+                <code id="compileCmd">mpicc 01_mpi_hello.c -o hello_mpi.exe</code>
+              </div>
+              <div class="compile-cmd">
+                <span class="cmd-label">Run:</span>
+                <code id="runCmd">mpiexec -n 4 .\hello_mpi.exe</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Mastery Checklist -->
+    <section id="milestones" class="section-card">
+      <div class="section-header">
+        <div class="section-tag">⭐ Day 2 Mastery</div>
+        <h2 class="section-title">Day 2 Core Concepts You MUST Understand</h2>
+        <p class="section-desc">Interactive self-evaluation. Test your conceptual readiness before concluding the workshop.</p>
+      </div>
+
+      <div class="progress-counter-card">
+        <div class="counter-header">
+          <span>Your Day 2 Readiness Score</span>
+          <span class="score-badge" id="readinessScore">0 / 9 Completed</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill progress-gold" id="readinessFill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="checklist-grid" id="checklistGrid">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- Section 6: Grand Summary -->
+    <section class="section-card bridge-card">
+      <div class="bridge-grid">
+        <div class="bridge-info">
+          <div class="section-tag gold-tag">🎯 DAY 2 GRAND SUMMARY</div>
+          <h2 class="bridge-title">From One Kitchen to the Supercomputing Franchise</h2>
+          <p class="bridge-text">
+            <strong>Day 1 (OpenMP):</strong> Multiple chefs working harmoniously inside one kitchen with a shared refrigerator.
+          </p>
+          <p class="bridge-text">
+            <strong>Day 2 (MPI):</strong> Multiple regional branch kitchens communicating via high-speed delivery messages.
+          </p>
+          <p class="bridge-text">
+            <strong>GPU + Hybrid:</strong> Adding 10,000 specialized line workers (GPU) coordinated by Corporate HQ (MPI) and Master Chefs (OpenMP).
+          </p>
+        </div>
+        <div class="bridge-quote-box">
+          <div class="quote-mark">“</div>
+          <p>
+            "Parallel computing is not simply about adding more processors. The real skill is learning how to divide work, coordinate workers, communicate efficiently, minimize waiting, and measure true speedup."
+          </p>
+          <span class="quote-author">— Day 2 Parallel Computing Trainer Guide</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <div class="footer-brand">⚡ Day 2: Parallel & Distributed Computing Workshop</div>
+        <p>MPI, Distributed Memory, GPU CUDA & Hybrid Systems • Designed for Beginners</p>
+      </div>
+      <div class="footer-right">
+        <a href="index.html" class="btn btn-secondary btn-sm" style="margin-right: 8px;">⬅ Back to Day 1</a>
+        <button class="btn btn-secondary btn-sm" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆ Back to Top</button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="day2.js"></script>
+</body>
+</html>

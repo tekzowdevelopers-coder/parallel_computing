@@ -175,6 +175,36 @@ code, pre {
   letter-spacing: 0.05em;
 }
 
+.day-nav-pills {
+  display: flex;
+  background: var(--bg-surface-elevated);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  gap: 4px;
+}
+
+.day-link-btn {
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.day-link-btn:hover {
+  color: var(--text-primary);
+}
+
+.day-link-btn.active {
+  background: linear-gradient(135deg, var(--accent-amber), var(--accent-orange));
+  color: #111827;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
 .nav-links {
   display: flex;
   align-items: center;
